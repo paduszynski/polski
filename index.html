@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Polski – ortografia dla dzieci</title>
+<meta name="version" content="1.0">
+<meta name="description" content="Polski – ćwiczenia z ortografii dla dzieci: ó czy u, dyktanda z lektorem i ściąga z regułami.">
+<meta name="theme-color" content="#1f3d99">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Polski">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+/* Zeszyt w linię: white ruled page, red margin, blue pen for the child, red pen for corrections. Phone first. */
+:root{
+  --paper:#ffffff; --line:#cfdcf2; --margin:#ef7a82;
+  --pencil:#2a2f3b; --muted:#6a7284; --ink:#1f3d99; --ink-soft:#e7edfb;
+  --red:#d22a36; --green:#18874a; --hi:#fff09a; --cover:#1f3d99;
+  --l1:#f39aa2; --l2:#ffc27a; --l3:#ffe066; --l4:#8fd6a5;
+  --hand:"Patrick Hand","Comic Sans MS","Segoe Print",cursive;
+  --row:34px; --mx:26px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+html{background:var(--paper)}
+body{
+  font-family:var(--hand);font-size:20px;line-height:1.3;color:var(--pencil);min-height:100svh;
+  -webkit-tap-highlight-color:transparent;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(to right,transparent var(--mx),var(--margin) var(--mx),var(--margin) calc(var(--mx) + 2px),transparent calc(var(--mx) + 2px)),
+    repeating-linear-gradient(to bottom,transparent 0 calc(var(--row) - 1px),var(--line) calc(var(--row) - 1px) var(--row));
+}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,[tabindex]:focus-visible{outline:3px dashed var(--ink);outline-offset:3px}
+a{color:var(--ink)}
+.wrap{max-width:1400px;margin:0 auto;
+  padding-left:max(calc(var(--mx) + 14px),env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+.hidden{display:none !important}
+
+/* ---------- header + burger menu ---------- */
+header.top{position:relative;z-index:10;background:var(--paper);border-bottom:3px double var(--red)}
+header .wrap{display:flex;align-items:center;gap:12px;min-height:60px;padding-block:6px;position:relative}
+.brand{display:flex;align-items:center;gap:8px;font-size:1.75rem;line-height:1;color:var(--ink);flex:none}
+.logo{width:40px;height:40px;border-radius:7px;background:var(--cover);color:#fff;display:grid;place-items:center;font-size:1.3rem;transform:rotate(-6deg);box-shadow:2px 3px 0 var(--line)}
+.ver{font-size:.8rem;color:var(--red);border:1.5px solid var(--red);border-radius:52% 46% 55% 47%;padding:0 6px;transform:rotate(-6deg);align-self:flex-start}
+.menu-btn{margin-left:auto;display:flex;align-items:center;gap:10px;border:2px solid var(--ink);color:var(--ink);background:var(--paper);border-radius:9px 13px 8px 12px;padding:5px 10px;font-size:1.15rem;min-width:0}
+.menu-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.burger{display:flex;flex-direction:column;gap:5px;width:22px;flex:none}
+.burger i{display:block;height:3px;border-radius:3px;background:var(--ink);transition:transform .2s,opacity .2s}
+.burger i:nth-child(3){width:80%}
+.menu-btn[aria-expanded="true"] .burger i:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.menu-btn[aria-expanded="true"] .burger i:nth-child(2){opacity:0}
+.menu-btn[aria-expanded="true"] .burger i:nth-child(3){transform:translateY(-8px) rotate(-45deg);width:100%}
+.menu{position:absolute;right:14px;top:100%;margin-top:8px;z-index:30;background:var(--paper);border:2px solid var(--ink);border-radius:8px 12px 7px 11px;
+  box-shadow:0 14px 30px -12px rgba(31,61,153,.45);padding:8px;display:flex;flex-direction:column;gap:4px;width:min(360px,calc(100vw - 28px))}
+.menu[hidden]{display:none}
+.menu-item{text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:8px;display:flex;flex-direction:column;gap:2px}
+.menu-item b{font-weight:400;font-size:1.35rem;line-height:1.1;color:var(--ink)}
+.menu-item span{color:var(--muted);font-size:1rem}
+.menu-item:hover{background:var(--ink-soft)}
+.menu-item[aria-current="true"] b{color:var(--red)}
+
+main{padding:14px 0 28px}
+
+/* ---------- layout: phone = stage first, settings below; desktop = settings left ---------- */
+.layout{display:grid;grid-template-columns:1fr;gap:22px;align-items:start}
+.settings{order:2}
+@media (min-width:960px){
+  main{padding-top:26px}
+  .layout{grid-template-columns:290px minmax(0,1fr);gap:40px}
+  .settings{order:0}
+}
+.panel{border:2px dashed var(--line);border-radius:12px 9px 14px 10px;padding:16px 18px;background:rgba(255,255,255,.85)}
+.panel h2{margin:0 0 12px;font-size:1.45rem;font-weight:400;color:var(--red)}
+.field{margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.label{display:block;font-size:1rem;color:var(--muted);margin-bottom:4px}
+.seg{display:flex;flex-wrap:wrap;gap:4px 8px}
+.seg button{border:2px solid transparent;background:transparent;padding:2px 8px;font-size:1.15rem;color:var(--muted);border-radius:52% 46% 55% 47%}
+.seg button:hover{color:var(--pencil)}
+.seg button[aria-pressed="true"]{color:var(--ink);border-color:var(--red)}
+.hint{font-size:1rem;color:var(--muted);margin:6px 0 0}
+
+.stage{display:flex;flex-direction:column;gap:14px;min-width:0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%;max-width:620px;margin:0 auto;text-align:center}
+.stat b{display:block;font-size:1.7rem;font-weight:400;line-height:1;color:var(--ink)}
+.stat span{font-size:.9rem;color:var(--muted)}
+.stat.ok b{color:var(--green)} .stat.bad b{color:var(--red)}
+
+/* ---------- buttons ---------- */
+.btn{border:2.5px solid var(--pencil);background:var(--paper);border-radius:12px 9px 14px 10px;padding:10px 18px;font-size:1.35rem;min-height:56px;flex:1;max-width:300px}
+.btn:active{transform:scale(.97)}
+.btn.primary{border-color:var(--ink);color:var(--ink)}
+.btn.red{border-color:var(--red);color:var(--red)}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.actions{display:flex;gap:12px;justify-content:center;width:100%;max-width:620px;margin:0 auto;flex-wrap:wrap}
+.keys{display:flex;gap:18px;justify-content:center}
+.key{width:min(34vw,130px);height:min(34vw,130px);border-radius:22px 18px 24px 19px;border:3px solid currentColor;background:var(--paper);
+  font-size:clamp(3.4rem,15vw,4.6rem);line-height:1;display:grid;place-items:center;box-shadow:0 5px 0 currentColor;padding:0}
+.key.o{color:var(--red)} .key.u{color:var(--ink)}
+.key:active{transform:translateY(4px);box-shadow:0 1px 0 currentColor}
+.key:disabled{opacity:.35;cursor:default}
+.kbd-hint{text-align:center;color:var(--muted);font-size:1rem;margin:0}
+kbd{font-family:inherit;border:1.5px solid var(--muted);border-bottom-width:3px;border-radius:6px;padding:0 6px}
+@media (hover:none){.kbd-hint{display:none}}
+
+/* ---------- Ó czy U card ---------- */
+.card{width:100%;max-width:620px;margin:0 auto;min-height:clamp(220px,34svh,320px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;
+  border:2px solid var(--line);border-radius:16px 12px 18px 13px;background:var(--paper);padding:18px 12px;position:relative}
+.card.ok{border-color:var(--green)} .card.bad{border-color:var(--red)}
+.badge{position:absolute;top:8px;right:12px;font-size:1rem;color:var(--red)}
+.qword{margin:0;font-size:clamp(3.4rem,17vw,5.4rem);line-height:1.05;letter-spacing:.02em;color:var(--pencil);overflow-wrap:anywhere}
+.gap{display:inline-block;min-width:.5em;text-align:center;border-bottom:3px dashed var(--red);line-height:1;color:var(--ink);position:relative;padding:0}
+.gap.empty{min-width:.66em}
+.gap.empty::before{content:"?";color:var(--line)}
+.gap.good{border-bottom:3px solid var(--green);color:var(--ink)}
+.gap.wrong{border-bottom-color:transparent}
+.gap.wrong s{color:var(--red);text-decoration-thickness:.09em;opacity:.75}
+.gap.wrong .fix{position:absolute;left:50%;transform:translateX(-50%) rotate(-6deg);bottom:96%;color:var(--red);font-size:.8em;font-weight:400}
+.fb{margin:0;font-size:1.35rem;min-height:1.3em}
+.fb b{font-weight:400}
+.card.ok .fb b{color:var(--green)} .card.bad .fb b{color:var(--red)}
+.why{margin:0;font-size:1.1rem;color:var(--muted);min-height:1.3em}
+.say{border:2px solid var(--ink);color:var(--ink);background:var(--paper);border-radius:999px;display:inline-flex;align-items:center;gap:6px;padding:4px 14px;font-size:1.1rem}
+.say svg{width:20px;height:20px}
+.pop{animation:pop .35s}
+@keyframes pop{50%{transform:scale(1.03)}}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-8px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
+
+/* ---------- summary ---------- */
+.summary{text-align:center;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.summary h2{font-size:2.1rem;font-weight:400;margin:0;color:var(--ink)}
+.stars{font-size:3.2rem;letter-spacing:.15em;color:#f2b705;line-height:1}
+.stars .off{color:var(--line)}
+.big-score{font-size:1.2rem;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center}
+.chip{border:0;background:transparent;padding:0 4px 2px;font-size:1.35rem;line-height:1.15;border-bottom:4px solid var(--line)}
+.chip.l1{border-color:var(--l1)} .chip.l2{border-color:var(--l2)} .chip.l3{border-color:var(--l3)} .chip.l4{border-color:var(--l4)}
+.chip.miss{color:var(--red);border-color:var(--red)}
+
+/* ---------- dyktando ---------- */
+.dk-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:14px;max-width:1100px}
+.dk-item{border:2px solid var(--line);border-radius:14px 11px 16px 12px;background:var(--paper);padding:14px 16px;text-align:left;display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center}
+.dk-item:hover{border-color:var(--ink)}
+.dk-item b{font-weight:400;font-size:1.5rem;color:var(--ink)}
+.dk-item span{color:var(--muted);font-size:1rem;grid-column:1}
+.dk-item .grade{grid-row:1 / span 2;grid-column:2}
+.dk-intro{max-width:62ch;margin:0 0 16px;color:var(--muted);font-size:1.1rem}
+.grade{width:58px;height:58px;border:3px solid var(--red);border-radius:50% 46% 52% 48%;color:var(--red);display:grid;place-items:center;font-size:2.1rem;line-height:1;transform:rotate(-8deg)}
+.grade.none{border-style:dashed;border-color:var(--line);color:var(--line);font-size:1.3rem}
+.grade.big{width:110px;height:110px;font-size:4.2rem;border-width:4px}
+.dk-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;max-width:760px;margin:0 auto;width:100%}
+.dk-head h2{margin:0;font-size:1.5rem;font-weight:400;color:var(--red)}
+.dk-progress{color:var(--muted);font-size:1.1rem}
+.listen{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.listen .say{font-size:1.25rem;padding:8px 18px}
+.listen .say.slow{border-style:dashed}
+.no-voice{color:var(--muted);font-size:1rem;text-align:center;margin:0}
+.sentence{max-width:760px;margin:0 auto;width:100%;font-size:clamp(1.9rem,8vw,2.6rem);line-height:2.15;color:var(--pencil);padding:10px 6px;text-align:left}
+.sentence .gap{cursor:pointer;border-radius:4px 4px 0 0}
+.sentence .gap.active{background:var(--hi);border-bottom-style:solid;border-bottom-color:var(--ink)}
+.sentence.checked .gap{cursor:default}
+.corrections{max-width:760px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:4px;font-size:1.15rem;min-height:0}
+.corrections p{margin:0}
+.corrections .w{color:var(--red)}
+.corrections .ok{color:var(--green)}
+.dk-summary{max-width:760px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center}
+.dk-summary h2{margin:0;font-size:2rem;font-weight:400;color:var(--ink)}
+.dk-summary .sentence{font-size:clamp(1.4rem,5.5vw,1.9rem);line-height:2;padding:0;border-bottom:1px dashed var(--line)}
+.dk-sheet{display:flex;flex-direction:column;gap:6px;width:100%}
+
+/* ---------- ściąga ---------- */
+.rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:16px}
+.rule{border:2px solid var(--line);border-radius:14px 11px 16px 12px;background:var(--paper);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.rule h3{margin:0;font-weight:400;font-size:1.45rem;line-height:1.1;display:flex;gap:10px;align-items:baseline}
+.rule h3 .L{font-size:2.2rem;line-height:.8;color:var(--red)}
+.rule.u h3 .L{color:var(--ink)}
+.rule p{margin:0;font-size:1.1rem;color:var(--muted)}
+.rule .chips{justify-content:flex-start}
+.ex{color:var(--pencil)}
+.ex em{font-style:normal;color:var(--red)}
+.rule.u .ex em{color:var(--ink)}
+.words-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.words-head h2{margin:0;font-size:1.6rem;font-weight:400;color:var(--red)}
+.overall{color:var(--muted)}
+.words-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:1rem;color:var(--muted)}
+.legend i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:5px;background:var(--line)}
+.link{border:0;background:none;color:var(--muted);padding:2px 0;font-size:1rem;text-decoration:underline wavy;text-underline-offset:4px}
+.link:hover{color:var(--pencil)}
+.confirm{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:1rem}
+.confirm .btn{min-height:0;padding:4px 12px;font-size:1.05rem;flex:none}
+
+footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28px;padding-left:max(calc(var(--mx) + 14px),env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+@media (min-width:960px){
+  .stat b{font-size:2.2rem}
+  .card{min-height:300px}
+}
+@media (max-width:359px){.menu-title{display:none}.brand{font-size:1.45rem}}
+@media (max-height:640px) and (max-width:700px){.stats{display:none}}
+@media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="spk" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.0">1.0</span></div>
+    <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
+      <span class="menu-title" id="menu-title"></span>
+      <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+    <nav class="menu" id="menu" hidden aria-label="Moduły">
+      <button class="menu-item" type="button" data-tab="ou"><b>Ó czy U?</b><span>Wstaw brakującą literkę</span></button>
+      <button class="menu-item" type="button" data-tab="dyktando"><b>Dyktando</b><span>Posłuchaj zdania i uzupełnij ó i u</span></button>
+      <button class="menu-item" type="button" data-tab="sciaga"><b>Ściąga</b><span>Reguły i moje słowa</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ================= Ó czy U ================= -->
+  <section id="tab-ou" class="tabpanel" aria-label="Ó czy U?" hidden>
+    <div class="layout">
+      <aside class="panel settings" aria-label="Ustawienia">
+        <h2>Ustawienia</h2>
+        <div class="field">
+          <span class="label">Słowa</span>
+          <div class="seg" id="ou-set-group">
+            <button type="button" data-v="all">Wszystkie</button>
+            <button type="button" data-v="o">Z ó</button>
+            <button type="button" data-v="u">Z u</button>
+          </div>
+          <p class="hint" id="ou-count"></p>
+        </div>
+        <div class="field">
+          <span class="label">Ile słów w rundzie?</span>
+          <div class="seg" id="ou-set-size">
+            <button type="button" data-v="10">10</button>
+            <button type="button" data-v="20">20</button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="label">Czytaj słowo na głos</span>
+          <div class="seg" id="ou-set-speak">
+            <button type="button" data-v="on">Tak</button>
+            <button type="button" data-v="off">Nie</button>
+          </div>
+        </div>
+        <div class="field">
+          <button class="btn primary" type="button" id="ou-new" style="flex:none;min-height:0;padding:6px 16px;font-size:1.2rem">Nowa runda ↻</button>
+        </div>
+      </aside>
+
+      <div class="stage">
+        <div class="stats">
+          <div class="stat ok"><b id="ou-s-ok">0</b><span>Dobrze</span></div>
+          <div class="stat bad"><b id="ou-s-bad">0</b><span>Błędy</span></div>
+          <div class="stat"><b id="ou-s-streak">0</b><span>Seria</span></div>
+          <div class="stat"><b id="ou-s-left">0</b><span>Zostało</span></div>
+        </div>
+        <div id="ou-play" class="stage">
+          <div class="card" id="ou-card" aria-live="polite">
+            <span class="badge" id="ou-badge"></span>
+            <p class="qword" id="ou-word"></p>
+            <p class="fb" id="ou-fb"></p>
+            <p class="why" id="ou-why"></p>
+          </div>
+          <div class="keys" id="ou-keys">
+            <button class="key o" type="button" data-l="ó" aria-label="ó">ó</button>
+            <button class="key u" type="button" data-l="u" aria-label="u">u</button>
+          </div>
+          <div class="actions"><button class="btn primary hidden" type="button" id="ou-next">Dalej →</button></div>
+          <p class="kbd-hint"><kbd>O</kbd> albo <kbd>←</kbd> to ó · <kbd>U</kbd> albo <kbd>→</kbd> to u · <kbd>Enter</kbd> dalej</p>
+        </div>
+        <div class="panel summary hidden" id="ou-summary"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Dyktando ================= -->
+  <section id="tab-dyktando" class="tabpanel" aria-label="Dyktando" hidden>
+    <div id="dk-choose">
+      <p class="dk-intro">Telefon czyta zdanie, a Ty wstawiasz ó albo u w puste miejsca. Po każdym zdaniu sprawdzamy je czerwonym długopisem, a na końcu jest ocena.</p>
+      <div class="dk-list" id="dk-list"></div>
+    </div>
+    <div id="dk-play" class="stage hidden">
+      <div class="dk-head"><h2 id="dk-title"></h2><span class="dk-progress" id="dk-progress"></span></div>
+      <div class="listen" id="dk-listen">
+        <button class="say" type="button" id="dk-say"><svg aria-hidden="true"><use href="#spk"/></svg>Posłuchaj</button>
+        <button class="say slow" type="button" id="dk-slow"><svg aria-hidden="true"><use href="#spk"/></svg>Wolniej</button>
+      </div>
+      <p class="no-voice hidden" id="dk-novoice">Ten telefon nie ma polskiego głosu, więc przeczytaj zdanie samodzielnie.</p>
+      <p class="sentence" id="dk-sentence"></p>
+      <div class="keys" id="dk-keys">
+        <button class="key o" type="button" data-l="ó" aria-label="ó">ó</button>
+        <button class="key u" type="button" data-l="u" aria-label="u">u</button>
+      </div>
+      <div class="corrections" id="dk-corr" aria-live="polite"></div>
+      <div class="actions">
+        <button class="btn" type="button" id="dk-back">← Lista</button>
+        <button class="btn primary" type="button" id="dk-check" disabled>Sprawdź</button>
+      </div>
+      <p class="kbd-hint"><kbd>O</kbd> to ó · <kbd>U</kbd> to u · <kbd>⌫</kbd> cofnij · <kbd>Enter</kbd> sprawdź</p>
+    </div>
+    <div id="dk-summary" class="dk-summary hidden"></div>
+  </section>
+
+  <!-- ================= Ściąga ================= -->
+  <section id="tab-sciaga" class="tabpanel" aria-label="Ściąga" hidden>
+    <div class="words-head">
+      <h2>Reguły i moje słowa</h2>
+      <span class="overall" id="sc-overall"></span>
+    </div>
+    <div class="rules" id="sc-rules"></div>
+    <div class="words-foot">
+      <div class="legend">
+        <span><i></i>Jeszcze nie było</span>
+        <span><i style="background:var(--l1)"></i>Do powtórki</span>
+        <span><i style="background:var(--l2)"></i>Uczę się</span>
+        <span><i style="background:var(--l3)"></i>Prawie umiem</span>
+        <span><i style="background:var(--l4)"></i>Umiem!</span>
+      </div>
+      <div id="reset-box"><button class="link" type="button" id="reset">Wyzeruj postęp</button></div>
+    </div>
+  </section>
+</main>
+
+<footer>Polski 1.0 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
+<canvas id="confetti"></canvas>
+
+<script>
+// ---------- word bank ----------
+// [word with the gap in brackets, rule, proof]
+// rules: o/e/a = ó wymienia się na o/e/a (proof = the word that shows it), ow = końcówka -ów/-ówka,
+// zo = ó niewymienne, x0 = ó na początku (wyjątek), u0 = u na początku, uk = końcówki -uje/-unek/-uszek/-utki/-uch, uz = u niewymienne
+const BANK = [
+  ['w[ó]z','o','wozy'], ['r[ó]g','o','rogi'], ['st[ó]ł','o','stoły'], ['l[ó]d','o','lodowisko'], ['mr[ó]z','o','mrozy'],
+  ['ogr[ó]d','o','ogrody'], ['d[ó]ł','o','doły'], ['k[ó]łko','o','koło'], ['n[ó]żka','o','noga'], ['dr[ó]żka','o','droga'],
+  ['szk[ó]łka','o','szkoła'], ['pszcz[ó]łka','o','pszczoła'], ['gł[ó]wka','o','głowa'], ['kr[ó]wka','o','krowa'], ['k[ó]zka','o','koza'],
+  ['s[ó]l','o','solić'], ['b[ó]l','o','boli'], ['mi[ó]d','o','miodowy'], ['r[ó]w','o','rowy'], ['n[ó]ż','o','noże'],
+  ['m[ó]j','o','moja'], ['tw[ó]j','o','twoja'], ['pok[ó]j','o','pokoje'], ['str[ó]j','o','stroje'], ['zr[ó]b','o','zrobić'],
+  ['dzi[ó]b','o','dzioby'], ['ł[ó]dź','o','łodzie'], ['gł[ó]d','o','głodny'], ['chł[ó]d','o','chłodny'], ['st[ó]g','o','stogi'],
+  ['pr[ó]g','o','progi'], ['b[ó]br','o','bobry'], ['s[ó]wka','o','sowa'], ['samoch[ó]d','o','samochody'], ['m[ó]wić','o','mowa'],
+  ['pi[ó]ro','e','pierze'], ['ni[ó]sł','e','niesie'], ['wi[ó]zł','e','wiezie'], ['kości[ó]ł','e','kościele'], ['popi[ó]ł','e','popielniczka'],
+  ['przyjaci[ó]łka','e','przyjaciel'],
+  ['wr[ó]cić','a','wracać'], ['skr[ó]cić','a','skracać'], ['obr[ó]t','a','obracać'],
+  ['kot[ó]w','ow'], ['dom[ó]w','ow'], ['kwiat[ó]w','ow'], ['ptak[ó]w','ow'], ['Krak[ó]w','ow'],
+  ['kresk[ó]wka','ow'], ['złot[ó]wka','ow'], ['poczt[ó]wka','ow'], ['żar[ó]wka','ow'], ['kryj[ó]wka','ow'], ['par[ó]wka','ow'],
+  ['g[ó]ra','zo'], ['kr[ó]l','zo'], ['ż[ó]łw','zo'], ['ż[ó]łty','zo'], ['c[ó]rka','zo'], ['og[ó]rek','zo'], ['jask[ó]łka','zo'],
+  ['r[ó]ża','zo'], ['wr[ó]bel','zo'], ['wiewi[ó]rka','zo'], ['m[ó]zg','zo'], ['sk[ó]ra','zo'], ['wr[ó]żka','zo'], ['ch[ó]r','zo'],
+  ['oł[ó]wek','zo'], ['ł[ó]żko','zo'], ['źr[ó]dło','zo'], ['p[ó]łka','zo'], ['ż[ó]łtko','zo'], ['kł[ó]tnia','zo'],
+  ['[ó]smy','x0'], ['[ó]semka','x0'],
+  ['[u]cho','u0'], ['[u]l','u0'], ['[u]lica','u0'], ['[u]śmiech','u0'], ['[u]branie','u0'], ['[u]rodziny','u0'], ['[u]czeń','u0'], ['[u]pał','u0'],
+  ['mal[u]je','uk'], ['rys[u]je','uk'], ['bud[u]je','uk'], ['prac[u]je','uk'], ['got[u]je','uk'],
+  ['rys[u]nek','uk'], ['kier[u]nek','uk'], ['podar[u]nek','uk'], ['opatr[u]nek','uk'],
+  ['fart[u]szek','uk'], ['brz[u]szek','uk'], ['koż[u]szek','uk'], ['star[u]szek','uk'],
+  ['mal[u]tki','uk'], ['cich[u]tki','uk'], ['mil[u]tki','uk'], ['mal[u]ch','uk'], ['leni[u]ch','uk'], ['łakomcz[u]ch','uk'],
+  ['m[u]cha','uz'], ['k[u]ra','uz'], ['ż[u]k','uz'], ['b[u]t','uz'], ['szn[u]rek','uz'], ['d[u]ży','uz'], ['c[u]kier','uz'],
+  ['dzi[u]ra','uz'], ['chm[u]ra','uz'], ['z[u]pa','uz'], ['k[u]bek','uz'], ['t[u]lipan','uz'], ['tr[u]skawka','uz'], ['l[u]stro','uz'],
+  ['k[u]rtka','uz'], ['bl[u]za','uz'], ['p[u]dełko','uz'], ['b[u]dzik','uz'], ['sz[u]flada','uz'], ['p[u]szka','uz'], ['g[u]zik','uz'], ['b[u]rza','uz'],
+].map(([g, r, p]) => {
+  const i = g.indexOf('['), l = g[i + 1];
+  return { w: g.replace(/[\[\]]/g, ''), i, l, r, p };
+});
+
+// inflected forms used in dyktanda, so corrections can explain them
+const EXTRA_FORMS = {
+  'ogródku': ['o', 'ogrody'], 'pszczółki': ['o', 'pszczoła'], 'łódkę': ['o', 'łodzie'], 'pióra': ['e', 'pierze'],
+  'ogórkiem': ['zo'], 'górki': ['zo'], 'półce': ['zo'], 'ołówki': ['zo'], 'króla': ['zo'], 'córce': ['zo'], 'córkę': ['zo'],
+  'różowy': ['zo'], 'łóżkiem': ['zo'], 'królewna': ['zo'], 'róże': ['zo'],
+};
+const FORMS = new Map(BANK.map(b => [b.w.toLowerCase(), b]));
+for (const [w, [r, p]] of Object.entries(EXTRA_FORMS)) FORMS.set(w, { w, r, p });
+
+const O_RULES = ['o', 'e', 'a', 'ow', 'zo', 'x0'];
+const U_SUFFIX = [['uje', '-uje'], ['uję', '-uje'], ['unek', '-unek'], ['unk', '-unek'], ['uszek', '-uszek'], ['uszk', '-uszek'], ['utk', '-utki']];
+
+// Why is this letter written this way? word = whole word, i = index of the letter in it
+function reason(word, i) {
+  const lw = word.toLowerCase(), l = lw[i], info = FORMS.get(lw);
+  if (l === 'ó') {
+    const r = info && O_RULES.includes(info.r) ? info.r : lw.endsWith('ów') && i === lw.length - 2 ? 'ow' : lw.startsWith('ówk', i) ? 'ow' : i === 0 ? 'x0' : null;
+    if (r === 'o' || r === 'e' || r === 'a') return `${lw} → ${info.p}: ó wymienia się na ${r}`;
+    if (r === 'ow') return lw.endsWith('ów') && i === lw.length - 2 ? 'końcówka -ów' : 'końcówka -ówka';
+    if (r === 'zo') return 'ó niewymienne: to słowo trzeba zapamiętać';
+    if (r === 'x0') return 'wyjątek: ósmy, ósemka piszemy przez ó';
+    return 'piszemy ó: zapamiętaj';
+  }
+  if (lw.length === 1) return 'małe słówko „u” piszemy zawsze przez u';
+  if (i === 0) return 'na początku słowa piszemy u';
+  if (i === lw.length - 1) return 'na końcu słowa piszemy zawsze u';
+  if (lw.endsWith('uch') && i === lw.length - 3) return 'końcówka -uch';
+  const suf = U_SUFFIX.find(([s]) => lw.startsWith(s, i));
+  if (suf) return 'końcówka ' + suf[1];
+  return 'u niewymienne: to słowo trzeba zapamiętać';
+}
+
+const RULES = [
+  { L: 'ó', t: 'ó wymienia się na o, e, a', d: 'Jeśli w innym słowie z tej samej rodziny jest w tym miejscu o, e albo a, piszemy ó.', keys: ['o', 'e', 'a'] },
+  { L: 'ó', t: 'Końcówki -ów i -ówka', d: 'kotów, domów, kwiatów · kreskówka, złotówka.', keys: ['ow'] },
+  { L: 'ó', t: 'ó niewymienne', d: 'Tego ó nie da się wymienić. Te słowa trzeba zapamiętać. Na początku słowa ó jest tylko w: ósmy, ósemka, ów.', keys: ['zo', 'x0'] },
+  { L: 'u', t: 'u na początku słowa', d: 'Na początku słowa piszemy u. Wyjątki: ósmy, ósemka, ów.', keys: ['u0'], u: true },
+  { L: 'u', t: 'u na końcu słowa', d: 'Ó nigdy nie stoi na końcu słowa.', ex: 'w ogródk<em>u</em> · w zamk<em>u</em> · w pokoj<em>u</em> · dużo śnieg<em>u</em> · t<em>u</em>', keys: [], u: true },
+  { L: 'u', t: 'Końcówki -uje, -unek, -uszek, -utki, -uch', d: 'maluje, rysunek, fartuszek, malutki, maluch.', keys: ['uk'], u: true },
+  { L: 'u', t: 'u niewymienne', d: 'Pozostałe u trzeba zapamiętać.', keys: ['uz'], u: true },
+];
+
+const DYKTANDA = [
+  { id: 'wies', t: 'Na wsi', s: ['Krówka i kózka chodzą po ogródku.', 'Kura gdacze, a kogut pieje.', 'Przed stodołą stoi duży wóz.', 'Pszczółki zbierają miód z kwiatów.', 'Mały żuk siedzi pod ogórkiem.'] },
+  { id: 'zima', t: 'Zima', s: ['Na dworze jest mróz i dużo śniegu.', 'Dzieci zjeżdżają na sankach z dużej górki.', 'Na stawie leży gruby lód.', 'Mama kupiła mi ciepłe buty i kożuszek.', 'Wróbel szuka okruszków.'] },
+  { id: 'szkola', t: 'W szkole', s: ['Uczeń rysuje kółko w zeszycie.', 'Na półce leżą ołówki i pióra.', 'Moja przyjaciółka ma żółty plecak.', 'Pani pokazuje nam rysunek króla.', 'Po szkole uczniowie wracają do domów.'] },
+  { id: 'przyroda', t: 'Przyroda', s: ['Ruda wiewiórka skacze z gałęzi na gałąź.', 'Jaskółka buduje gniazdo pod dachem.', 'Żółw powoli wędruje przez ogród.', 'Sówka mruga dużymi oczami.', 'W ogródku u babci rosną truskawki.'] },
+  { id: 'dom', t: 'W domu', s: ['W pokoju stoi stół i cztery krzesła.', 'Mama gotuje zupę z buraków.', 'Mój brat lubi kreskówki o psach.', 'Tata kupił córce różowy kubek.', 'Pod łóżkiem leży but i pluszowy miś.'] },
+  { id: 'bajka', t: 'Bajka', s: ['Dawno temu w dużym zamku mieszkał król.', 'Król miał piękną córkę.', 'Królewna lubiła róże i tulipany.', 'Pewnego dnia do zamku przyfrunęła wróżka.', 'Wróżka podarowała jej złotą łódkę.'] },
+];
+
+// ---------- shared: storage, confetti, speech ----------
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const LS = 'polski.v1';
+let store;
+try { store = JSON.parse(localStorage.getItem(LS)); } catch (e) {}
+store = {
+  ou: { group: 'all', size: '10', speak: 'on', ...(store && store.ou) },
+  words: (store && store.words) || {},
+  dk: (store && store.dk) || {},
+};
+const save = () => { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) {} };
+// level: 0 = never seen, 1..4 = box (1 = needs work, 4 = mastered)
+const level = w => { const r = store.words[w.w]; return r ? r.box + 1 : 0; };
+
+let interacted = false;
+addEventListener('pointerdown', () => interacted = true, { once: true, capture: true });
+addEventListener('keydown', () => interacted = true, { once: true, capture: true });
+
+const confetti = (() => {
+  const cv = $('confetti'), cx = cv.getContext('2d');
+  let parts = [], raf = 0;
+  function tick() {
+    const d = devicePixelRatio;
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(p => p.y < innerHeight + 40 && p.life < 300);
+    for (const p of parts) {
+      p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; p.life++;
+      cx.save(); cx.translate(p.x * d, p.y * d); cx.rotate(p.r);
+      cx.fillStyle = p.c; cx.fillRect(-p.s * d / 2, -p.s * d / 4, p.s * d, p.s * d / 2);
+      cx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(tick) : (cx.clearRect(0, 0, cv.width, cv.height), 0);
+  }
+  return n => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+    const colors = ['#1f3d99', '#d22a36', '#f2b705', '#18874a', '#6ea0ff', '#ff9fb0'];
+    for (let i = 0; i < n; i++) parts.push({
+      x: innerWidth / 2 + (Math.random() - .5) * 200, y: innerHeight * .35,
+      vx: (Math.random() - .5) * 16, vy: -Math.random() * 14 - 4,
+      s: 6 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - .5) * .3,
+      c: colors[i % colors.length], life: 0,
+    });
+    if (!raf) raf = requestAnimationFrame(tick);
+  };
+})();
+
+const speech = (() => {
+  const ok = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+  let voice = null, known = false;
+  function pick() {
+    const all = speechSynthesis.getVoices();
+    if (all.length) known = true;
+    const vs = all.filter(v => /^pl([-_]|$)/i.test(v.lang));
+    voice = vs.find(v => v.localService) || vs[0] || null;
+    document.dispatchEvent(new Event('voices'));
+  }
+  if (ok) { pick(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', pick); }
+  return {
+    // false only when we know for sure there is no Polish voice
+    get available() { return ok && (!known || !!voice); },
+    say(text, rate = .9) {
+      if (!ok) return;
+      try {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = 'pl-PL';
+        if (voice) u.voice = voice;
+        u.rate = rate;
+        speechSynthesis.speak(u);
+      } catch (e) {}
+    },
+  };
+})();
+
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+
+const PRAISE = ['Brawo!', 'Super!', 'Świetnie!', 'Ekstra!', 'Tak jest!', 'Doskonale!', 'Pięknie!'];
+const praise = () => PRAISE[Math.floor(Math.random() * PRAISE.length)];
+const plural = (n, one, few, many) => n === 1 ? one : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? few : many;
+function btn(label, cls, fn) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'btn ' + cls; b.textContent = label; b.onclick = fn; return b;
+}
+const isO = b => O_RULES.includes(b.r);
+// put letter c into the slot, keeping the case of the expected letter
+const withCase = (c, ref) => ref === ref.toUpperCase() ? c.toUpperCase() : c;
+
+// ================= Ó czy U =================
+const OU = (() => {
+  const S = store.ou;
+  let R = null, phase = 'question', timer = null;
+
+  const eligible = () => BANK.filter(b => S.group === 'all' || (S.group === 'o') === isO(b));
+  const weight = w => [3, 6, 4, 2, 1][level(w)];
+  function sample(list, size) {
+    const pool = list.map(w => ({ w, wt: weight(w) }));
+    const out = [];
+    while (out.length < Math.min(+size, pool.length)) {
+      let r = Math.random() * pool.reduce((a, p) => a + p.wt, 0), i = 0;
+      for (; i < pool.length - 1; i++) { r -= pool[i].wt; if (r <= 0) break; }
+      out.push(pool.splice(i, 1)[0].w);
+    }
+    return out;
+  }
+  function record(w, ok) {
+    const r = store.words[w.w] || { box: 0, ok: 0, bad: 0 };
+    if (ok) { r.ok++; r.box = store.words[w.w] ? Math.min(3, r.box + 1) : 1; }
+    else { r.bad++; r.box = 0; }
+    store.words[w.w] = r;
+    save();
+  }
+
+  function newRound(words) {
+    clearTimeout(timer);
+    const list = words || sample(eligible(), S.size);
+    R = { queue: list.map(w => ({ w, retry: false })), ok: 0, bad: 0, streak: 0, best: 0, miss: new Map() };
+    $('ou-summary').classList.add('hidden');
+    $('ou-play').classList.remove('hidden');
+    show();
+  }
+  const cur = () => R && R.queue[0];
+
+  function wordHTML(w, slot) {
+    return esc(w.w.slice(0, w.i)) + slot + esc(w.w.slice(w.i + 1));
+  }
+
+  function show() {
+    const c = cur(); if (!c) return;
+    phase = 'question';
+    const card = $('ou-card');
+    card.classList.remove('ok', 'bad');
+    $('ou-badge').textContent = c.retry ? 'Jeszcze raz' : '';
+    $('ou-word').innerHTML = wordHTML(c.w, '<span class="gap empty"></span>');
+    $('ou-fb').textContent = '';
+    $('ou-why').textContent = '';
+    $('ou-next').classList.add('hidden');
+    $('ou-keys').querySelectorAll('button').forEach(b => b.disabled = false);
+    if (S.speak === 'on' && interacted) setTimeout(() => phase === 'question' && cur() === c && speech.say(c.w.w), 200);
+    stats();
+  }
+
+  function stats() {
+    $('ou-s-ok').textContent = R.ok; $('ou-s-bad').textContent = R.bad;
+    $('ou-s-streak').textContent = R.streak; $('ou-s-left').textContent = R.queue.length;
+  }
+
+  function answer(l) {
+    if (phase !== 'question') return;
+    const c = cur(), w = c.w, ok = l === w.l;
+    if (!c.retry) { record(w, ok); ok ? R.ok++ : R.bad++; }
+    const card = $('ou-card');
+    if (ok) {
+      R.streak++; R.best = Math.max(R.best, R.streak);
+      if (R.streak % 5 === 0) confetti(50);
+      $('ou-word').innerHTML = wordHTML(w, `<span class="gap good">${esc(w.l)}</span>`);
+      $('ou-fb').innerHTML = `<b>${praise()}</b>`;
+    } else {
+      R.streak = 0; R.miss.set(w.w, w);
+      $('ou-word').innerHTML = wordHTML(w, `<span class="gap wrong"><s>${esc(l)}</s><b class="fix">${esc(w.l)}</b></span>`);
+      $('ou-fb').innerHTML = `<b>Piszemy „${esc(w.w)}”</b>`;
+      card.classList.add('shake'); setTimeout(() => card.classList.remove('shake'), 450);
+    }
+    $('ou-why').textContent = reason(w.w, w.i);
+    card.classList.add(ok ? 'ok' : 'bad');
+    phase = ok ? 'ok' : 'bad';
+    $('ou-keys').querySelectorAll('button').forEach(b => b.disabled = true);
+    $('ou-next').classList.remove('hidden');
+    stats();
+    renderSciaga();
+    if (ok) timer = setTimeout(next, 1600);
+  }
+
+  function next() {
+    if (phase !== 'ok' && phase !== 'bad') return;
+    clearTimeout(timer);
+    const c = R.queue.shift();
+    if (phase === 'bad') R.queue.splice(Math.min(3, R.queue.length), 0, { w: c.w, retry: true });
+    if (!R.queue.length) return summary();
+    show();
+    const card = $('ou-card'); card.classList.add('pop'); setTimeout(() => card.classList.remove('pop'), 350);
+  }
+
+  function summary() {
+    phase = 'summary'; stats();
+    const first = R.ok + R.bad, pct = first ? Math.round(100 * R.ok / first) : 0;
+    const stars = pct >= 90 ? 3 : pct >= 70 ? 2 : pct >= 40 ? 1 : 0;
+    const title = pct === 100 ? 'Bezbłędnie!' : pct >= 90 ? 'Brawo! Świetna robota!' : pct >= 70 ? 'Bardzo dobrze!' : pct >= 40 ? 'Nieźle, ćwiczymy dalej!' : 'Spróbuj jeszcze raz, będzie lepiej!';
+    const miss = [...R.miss.values()];
+    const el = $('ou-summary');
+    el.innerHTML = `<h2>${title}</h2>
+      <div class="stars">${[0, 1, 2].map(i => `<span class="${i < stars ? '' : 'off'}">★</span>`).join('')}</div>
+      <div class="big-score">${R.ok} z ${first} od razu dobrze · najdłuższa seria: ${R.best}</div>
+      ${miss.length ? `<p class="hint">Te słowa warto powtórzyć:</p><div class="chips">${miss.map(w => `<button class="chip miss" type="button" data-say="${esc(w.w)}">${esc(w.w)}</button>`).join('')}</div>` : ''}
+      <div class="actions"></div>`;
+    const a = el.querySelector('.actions');
+    if (miss.length) a.append(btn('Powtórz trudne', 'red', () => newRound(miss)));
+    a.append(btn('Nowa runda ↻', 'primary', () => newRound()));
+    $('ou-play').classList.add('hidden');
+    el.classList.remove('hidden');
+    if (stars >= 2) confetti(stars === 3 ? 160 : 80);
+  }
+
+  $('ou-keys').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) answer(b.dataset.l); });
+  $('ou-next').onclick = next;
+  $('ou-new').onclick = () => newRound();
+
+  const segs = { 'ou-set-group': 'group', 'ou-set-size': 'size', 'ou-set-speak': 'speak' };
+  function renderSettings() {
+    for (const [id, k] of Object.entries(segs))
+      $(id).querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === S[k])));
+    const n = eligible().length;
+    $('ou-count').textContent = `${n} ${plural(n, 'słowo', 'słowa', 'słów')}`;
+  }
+  for (const [id, k] of Object.entries(segs))
+    $(id).querySelectorAll('button').forEach(b => b.onclick = () => {
+      S[k] = b.dataset.v; save(); renderSettings();
+      if (k !== 'speak') newRound();
+    });
+
+  function key(e) {
+    if (phase === 'summary') { if (e.key === 'Enter') newRound(); return; }
+    const k = e.key.toLowerCase();
+    if (phase === 'question') {
+      if (k === 'o' || k === 'ó' || k === 'arrowleft') { e.preventDefault(); answer('ó'); }
+      else if (k === 'u' || k === 'arrowright') { e.preventDefault(); answer('u'); }
+    } else if (k === 'enter' || k === ' ') { e.preventDefault(); next(); }
+  }
+
+  renderSettings();
+  newRound();
+  return { key };
+})();
+
+// ================= Dyktando =================
+const DK = (() => {
+  let D = null; // { d, n, sentences: [{text, gaps:[{i, want, got}]}], active }
+  const LETTER = /\p{L}/u;
+
+  function parse(text) {
+    const gaps = [];
+    [...text].forEach((ch, i) => { if ('óuÓU'.includes(ch)) gaps.push({ i, want: ch, got: null }); });
+    return { text, gaps, checked: false };
+  }
+  // whole word around position i and the index of i inside it
+  function wordAt(chars, i) {
+    let a = i, b = i;
+    while (a > 0 && LETTER.test(chars[a - 1])) a--;
+    while (b < chars.length - 1 && LETTER.test(chars[b + 1])) b++;
+    return { word: chars.slice(a, b + 1).join(''), at: i - a };
+  }
+
+  const GRADE = pct => pct === 100 ? 6 : pct >= 90 ? 5 : pct >= 75 ? 4 : pct >= 50 ? 3 : pct >= 30 ? 2 : 1;
+  const GRADE_TEXT = { 6: 'Celująco! Ani jednego błędu!', 5: 'Bardzo dobrze!', 4: 'Dobrze!', 3: 'Nieźle, poćwiczmy jeszcze.', 2: 'Spróbuj jeszcze raz, będzie lepiej.', 1: 'Spróbuj jeszcze raz, będzie lepiej.' };
+
+  function renderList() {
+    $('dk-list').innerHTML = DYKTANDA.map((d, n) => {
+      const g = store.dk[d.id];
+      return `<button class="dk-item" type="button" data-n="${n}"><b>${n + 1}. ${esc(d.t)}</b><span>${d.s.length} zdań</span>
+        <span class="grade ${g ? '' : 'none'}" aria-label="${g ? 'najlepsza ocena ' + g : 'jeszcze nie pisane'}">${g || '–'}</span></button>`;
+    }).join('');
+  }
+  $('dk-list').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) start(+b.dataset.n); });
+
+  function start(n) {
+    const d = DYKTANDA[n];
+    D = { d, n: 0, sentences: d.s.map(parse), active: 0 };
+    $('dk-choose').classList.add('hidden');
+    $('dk-summary').classList.add('hidden');
+    $('dk-play').classList.remove('hidden');
+    $('dk-title').textContent = d.t;
+    showSentence(true);
+    scrollTo(0, 0);
+  }
+  const S = () => D.sentences[D.n];
+
+  function voiceUI() {
+    const ok = speech.available;
+    $('dk-listen').classList.toggle('hidden', !ok);
+    $('dk-novoice').classList.toggle('hidden', ok);
+  }
+  document.addEventListener('voices', voiceUI);
+
+  function showSentence(read) {
+    D.active = 0;
+    $('dk-progress').textContent = `zdanie ${D.n + 1} z ${D.sentences.length}`;
+    $('dk-corr').innerHTML = '';
+    $('dk-keys').classList.remove('hidden');
+    const c = $('dk-check'); c.textContent = 'Sprawdź'; c.onclick = check;
+    voiceUI();
+    render();
+    if (read && interacted) setTimeout(() => speech.say(S().text, .85), 250);
+  }
+
+  function gapHTML(s, g, k) {
+    if (s.checked) {
+      if (g.got === g.want) return `<span class="gap good">${esc(g.got)}</span>`;
+      return `<span class="gap wrong"><s>${esc(g.got)}</s><b class="fix">${esc(g.want)}</b></span>`;
+    }
+    const cls = 'gap' + (g.got ? '' : ' empty') + (k === D.active ? ' active' : '');
+    return `<span class="${cls}" data-k="${k}" role="button" tabindex="-1" aria-label="luka ${k + 1}">${g.got ? esc(g.got) : ''}</span>`;
+  }
+  function sentenceHTML(s) {
+    const chars = [...s.text];
+    let out = '', k = 0;
+    chars.forEach((ch, i) => {
+      if (s.gaps[k] && s.gaps[k].i === i) { out += gapHTML(s, s.gaps[k], k); k++; }
+      else out += esc(ch);
+    });
+    return out;
+  }
+  function render() {
+    const s = S(), el = $('dk-sentence');
+    el.classList.toggle('checked', s.checked);
+    el.innerHTML = sentenceHTML(s);
+    $('dk-check').disabled = !s.checked && s.gaps.some(g => !g.got);
+  }
+
+  $('dk-sentence').addEventListener('click', e => {
+    const g = e.target.closest('[data-k]');
+    if (!g || S().checked) return;
+    D.active = +g.dataset.k; render();
+  });
+
+  function put(l) {
+    const s = S(); if (s.checked) return;
+    const g = s.gaps[D.active]; if (!g) return;
+    g.got = withCase(l, g.want);
+    // jump to the next empty gap (after this one, then from the start)
+    const order = [...s.gaps.keys()].slice(D.active + 1).concat([...s.gaps.keys()].slice(0, D.active + 1));
+    const nxt = order.find(k => !s.gaps[k].got);
+    D.active = nxt === undefined ? Math.min(D.active + 1, s.gaps.length - 1) : nxt;
+    render();
+  }
+  function back() {
+    const s = S(); if (s.checked) return;
+    if (s.gaps[D.active] && s.gaps[D.active].got) s.gaps[D.active].got = null;
+    else if (D.active > 0) { D.active--; s.gaps[D.active].got = null; }
+    render();
+  }
+  $('dk-keys').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) put(b.dataset.l); });
+
+  function check() {
+    const s = S();
+    if (s.gaps.some(g => !g.got)) return;
+    s.checked = true;
+    render();
+    const chars = [...s.text];
+    const bad = s.gaps.filter(g => g.got !== g.want);
+    $('dk-corr').innerHTML = bad.length
+      ? bad.map(g => { const { word, at } = wordAt(chars, g.i); return `<p><span class="w">${esc(word)}</span>: ${esc(reason(word, at))}</p>`; }).join('')
+      : `<p class="ok">${praise()} Wszystko dobrze.</p>`;
+    if (!bad.length) confetti(40);
+    $('dk-keys').classList.add('hidden');
+    const c = $('dk-check');
+    const last = D.n === D.sentences.length - 1;
+    c.textContent = last ? 'Ocena →' : 'Następne zdanie →';
+    c.disabled = false;
+    c.onclick = last ? summary : () => { D.n++; showSentence(true); };
+    c.focus({ preventScroll: true });
+  }
+
+  function summary() {
+    const all = D.sentences.flatMap(s => s.gaps), good = all.filter(g => g.got === g.want).length;
+    const grade = GRADE(Math.round(100 * good / all.length));
+    const id = D.d.id;
+    if (!store.dk[id] || grade > store.dk[id]) { store.dk[id] = grade; save(); }
+    const el = $('dk-summary');
+    el.innerHTML = `<h2>${esc(D.d.t)}</h2>
+      <span class="grade big" aria-label="ocena ${grade}">${grade}</span>
+      <div class="big-score">${GRADE_TEXT[grade]} ${good} z ${all.length} liter dobrze.</div>
+      <div class="dk-sheet">${D.sentences.map(s => `<p class="sentence checked">${sentenceHTML(s)}</p>`).join('')}</div>
+      <div class="actions"></div>`;
+    const a = el.querySelector('.actions');
+    a.append(btn('← Lista dyktand', '', list), btn('Jeszcze raz ↻', 'primary', () => start(DYKTANDA.indexOf(D.d))));
+    $('dk-play').classList.add('hidden');
+    el.classList.remove('hidden');
+    renderList();
+    if (grade >= 5) confetti(grade === 6 ? 160 : 80);
+    scrollTo(0, 0);
+  }
+
+  function list() {
+    D = null;
+    speech.say('');
+    $('dk-play').classList.add('hidden');
+    $('dk-summary').classList.add('hidden');
+    $('dk-choose').classList.remove('hidden');
+    renderList();
+  }
+  $('dk-back').onclick = list;
+  $('dk-say').onclick = () => D && speech.say(S().text, .85);
+  $('dk-slow').onclick = () => D && speech.say(S().text, .55);
+
+  function key(e) {
+    if (!D || $('dk-play').classList.contains('hidden')) return;
+    const k = e.key.toLowerCase(), s = S();
+    if (!s.checked && (k === 'o' || k === 'ó')) { e.preventDefault(); put('ó'); }
+    else if (!s.checked && k === 'u') { e.preventDefault(); put('u'); }
+    else if (k === 'backspace') { e.preventDefault(); back(); }
+    else if (k === 'arrowleft' && !s.checked) { D.active = Math.max(0, D.active - 1); render(); }
+    else if (k === 'arrowright' && !s.checked) { D.active = Math.min(s.gaps.length - 1, D.active + 1); render(); }
+    else if (k === 'enter' && !$('dk-check').disabled) { e.preventDefault(); $('dk-check').click(); }
+  }
+
+  renderList();
+  return { key };
+})();
+
+// ================= Ściąga =================
+function renderSciaga() {
+  let mastered = 0;
+  $('sc-rules').innerHTML = RULES.map(r => {
+    const words = BANK.filter(b => r.keys.includes(b.r));
+    const chips = words.map(w => {
+      const lv = level(w); if (lv === 4) mastered++;
+      return `<button class="chip l${lv}" type="button" data-say="${esc(w.w)}">${esc(w.w.slice(0, w.i))}<em style="font-style:normal;color:var(${r.u ? '--ink' : '--red'})">${esc(w.l)}</em>${esc(w.w.slice(w.i + 1))}</button>`;
+    }).join('');
+    return `<article class="rule ${r.u ? 'u' : ''}"><h3><span class="L">${r.L}</span>${esc(r.t)}</h3><p>${esc(r.d)}</p>
+      ${r.ex ? `<p class="ex">${r.ex}</p>` : ''}${chips ? `<div class="chips">${chips}</div>` : ''}</article>`;
+  }).join('');
+  $('sc-overall').textContent = `Umiem ${mastered} z ${BANK.length}`;
+}
+function resetPrompt() {
+  $('reset-box').innerHTML = '<span class="confirm">Na pewno wyzerować? <button class="btn red" type="button" id="reset-yes">Tak</button><button class="btn" type="button" id="reset-no">Nie</button></span>';
+  $('reset-yes').onclick = () => { store.words = {}; store.dk = {}; save(); renderSciaga(); restoreReset(); location.reload(); };
+  $('reset-no').onclick = restoreReset;
+}
+function restoreReset() { $('reset-box').innerHTML = '<button class="link" type="button" id="reset">Wyzeruj postęp</button>'; $('reset').onclick = resetPrompt; }
+$('reset').onclick = resetPrompt;
+renderSciaga();
+
+// ---------- tap a word to hear it ----------
+document.addEventListener('click', e => {
+  const s = e.target.closest('[data-say]');
+  if (s) speech.say(s.dataset.say);
+});
+
+// ---------- menu (burger) + keyboard ----------
+let tab = 'ou';
+(() => {
+  const mb = $('menu-btn'), menu = $('menu');
+  const items = [...menu.querySelectorAll('.menu-item')];
+  const open = show => { menu.hidden = !show; mb.setAttribute('aria-expanded', String(show)); };
+  function showTab(name) {
+    if (!$('tab-' + name)) name = 'ou';
+    tab = name;
+    document.querySelectorAll('.tabpanel').forEach(p => p.hidden = p.id !== 'tab-' + name);
+    items.forEach(i => i.setAttribute('aria-current', String(i.dataset.tab === name)));
+    $('menu-title').textContent = items.find(i => i.dataset.tab === name).querySelector('b').textContent;
+    try { localStorage.setItem('polski.tab', name); } catch (e) {}
+  }
+  mb.onclick = e => { e.stopPropagation(); open(menu.hidden); };
+  items.forEach(i => i.onclick = () => { showTab(i.dataset.tab); open(false); scrollTo(0, 0); });
+  document.addEventListener('click', e => { if (!menu.hidden && !menu.contains(e.target)) open(false); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) { open(false); mb.focus(); } }, true);
+  let start = 'ou';
+  try { start = localStorage.getItem('polski.tab') || 'ou'; } catch (e) {}
+  showTab(start);
+})();
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey || !$('menu').hidden) return;
+  if (e.target.closest && e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
+  if (tab === 'ou') OU.key(e);
+  else if (tab === 'dyktando') DK.key(e);
+});
+</script>
+</body>
+</html>
