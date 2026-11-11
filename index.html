@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Polski – ćwiczenia dla dzieci</title>
-<meta name="version" content="1.1">
-<meta name="description" content="Polski – ćwiczenia dla dzieci: ó czy u, rz czy ż, dyktanda z lektorem, alfabet, litery i głoski, sylaby.">
+<meta name="version" content="1.2">
+<meta name="description" content="Polski – ćwiczenia dla dzieci: ó czy u, rz czy ż, ch czy h, dyktanda z lektorem, alfabet, litery i głoski, sylaby.">
 <meta name="theme-color" content="#1f3d99">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -222,6 +222,7 @@ kbd{font-family:inherit;border:1.5px solid var(--muted);border-bottom-width:3px;
 .sentence .gap{cursor:pointer;border-radius:4px 4px 0 0}
 .sentence .gap.active{background:var(--hi);border-bottom-style:solid;border-bottom-color:var(--ink)}
 .sentence.checked .gap{cursor:default}
+.sentence .wd{white-space:nowrap}
 .corrections{max-width:760px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:4px;font-size:1.15rem}
 .corrections p{margin:0}
 .corrections .w{color:var(--red)}
@@ -275,7 +276,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.1">1.1</span></div>
+    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.2">1.2</span></div>
     <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
       <span class="menu-title" id="menu-title"></span>
       <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -284,7 +285,8 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
       <p class="menu-group">Ortografia</p>
       <button class="menu-item" type="button" data-tab="ou"><b>Ó czy U?</b><span>Wstaw brakującą literkę</span></button>
       <button class="menu-item" type="button" data-tab="rz"><b>Rz czy Ż?</b><span>Wstaw brakującą literkę</span></button>
-      <button class="menu-item" type="button" data-tab="dyktando"><b>Dyktando ó/u</b><span>Posłuchaj zdania i uzupełnij</span></button>
+      <button class="menu-item" type="button" data-tab="ch"><b>Ch czy H?</b><span>Wstaw brakującą literkę</span></button>
+      <button class="menu-item" type="button" data-tab="dyktando"><b>Dyktanda</b><span>ó/u, rz/ż, ch/h: posłuchaj i uzupełnij</span></button>
       <p class="menu-group">Wiedza o języku</p>
       <button class="menu-item" type="button" data-tab="ab"><b>Alfabet</b><span>Kolejność liter i wyrazów</span></button>
       <button class="menu-item" type="button" data-tab="lg"><b>Litery i głoski</b><span>Policz litery i głoski</span></button>
@@ -298,6 +300,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
 <main class="wrap">
   <section id="tab-ou" class="tabpanel" aria-label="Ó czy U?" hidden></section>
   <section id="tab-rz" class="tabpanel" aria-label="Rz czy Ż?" hidden></section>
+  <section id="tab-ch" class="tabpanel" aria-label="Ch czy H?" hidden></section>
   <section id="tab-ab" class="tabpanel" aria-label="Alfabet" hidden></section>
   <section id="tab-lg" class="tabpanel" aria-label="Litery i głoski" hidden></section>
   <section id="tab-sy" class="tabpanel" aria-label="Sylaby" hidden></section>
@@ -305,8 +308,8 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
   <!-- ================= Dyktando ================= -->
   <section id="tab-dyktando" class="tabpanel" aria-label="Dyktando" hidden>
     <div id="dk-choose">
-      <p class="dk-intro">Telefon czyta zdanie, a Ty wstawiasz ó albo u w puste miejsca. Po każdym zdaniu sprawdzamy je czerwonym długopisem, a na końcu jest ocena.</p>
-      <div class="dk-list" id="dk-list"></div>
+      <p class="dk-intro">Telefon czyta zdanie, a Ty wstawiasz brakujące litery w puste miejsca. Po każdym zdaniu sprawdzamy je czerwonym długopisem, a na końcu jest ocena.</p>
+      <div id="dk-list"></div>
     </div>
     <div id="dk-play" class="stage hidden">
       <div class="dk-head"><h2 id="dk-title"></h2><span class="dk-progress" id="dk-progress"></span></div>
@@ -316,16 +319,13 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
       </div>
       <p class="no-voice hidden" id="dk-novoice">Ten telefon nie ma polskiego głosu, więc przeczytaj zdanie samodzielnie.</p>
       <p class="sentence" id="dk-sentence"></p>
-      <div class="keys" id="dk-keys">
-        <button class="key k0" type="button" data-l="ó" aria-label="ó">ó</button>
-        <button class="key k1" type="button" data-l="u" aria-label="u">u</button>
-      </div>
+      <div class="keys" id="dk-keys"></div>
       <div class="corrections" id="dk-corr" aria-live="polite"></div>
       <div class="actions">
         <button class="btn" type="button" id="dk-back">← Lista</button>
         <button class="btn primary" type="button" id="dk-check" disabled>Sprawdź</button>
       </div>
-      <p class="kbd-hint"><kbd>O</kbd> to ó · <kbd>U</kbd> to u · <kbd>⌫</kbd> cofnij · <kbd>Enter</kbd> sprawdź</p>
+      <p class="kbd-hint"><span id="dk-kbd"></span> · <kbd>⌫</kbd> cofnij · <kbd>Enter</kbd> sprawdź</p>
       <div id="dk-cheat"></div>
     </div>
     <div id="dk-summary" class="dk-summary hidden"></div>
@@ -347,7 +347,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
   </section>
 </main>
 
-<footer>Polski 1.1 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
+<footer>Polski 1.2 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
 <canvas id="confetti"></canvas>
 
 <script>
@@ -438,14 +438,68 @@ const RZ_BANK = parseBank([
   ['ró[ż]a','z0'], ['ba[ż]ant','z0'], ['[ż]elazko','z0'], ['[ż]yto','z0'], ['kału[ż]a','z0'], ['wie[ż]a','z0'], ['[ż]ółw','z0'], ['mę[ż]czyzna','z0'], ['je[ż]yna','z0'],
 ]);
 
+const RZ_PO = ['b', 'ch', 'd', 'g', 'j', 'k', 'p', 't', 'w'];
+const prevLetter = (w, i) => w.slice(i - 2, i) === 'ch' ? 'ch' : w[i - 1];
 function reasonRZ(b) {
   const w = b.w;
   if (b.r === 'r') return { t: `${w} → ${b.p}: rz wymienia się na r`, r: 'r' };
-  if (b.r === 'po') { const prev = w.slice(b.i - 2, b.i) === 'ch' ? 'ch' : w[b.i - 1]; return { t: `po „${prev}” piszemy rz`, r: 'po' }; }
-  if (b.r === 'ar') return { t: 'końcówka ' + (w.endsWith('arz') ? '-arz' : '-erz'), r: 'ar' };
+  if (b.r === 'po') return { t: `po „${prevLetter(w, b.i)}” piszemy rz`, r: 'po' };
+  if (b.r === 'ar') return { t: 'końcówka ' + (w[b.i - 1] === 'a' ? '-arz' : '-erz') + (w.length > b.i + 2 ? ` (jak ${w[b.i - 1] === 'a' ? 'lekarz' : 'talerz'})` : ''), r: 'ar' };
   if (b.r === 'rz0') return { t: 'rz niewymienne: to słowo trzeba zapamiętać', r: 'rz0' };
   if (b.r === 'zw') return { t: `${w} → ${b.p}: ż wymienia się na ${b.s}`, r: 'zw' };
   return { t: 'ż niewymienne: to słowo trzeba zapamiętać', r: 'z0' };
+}
+
+// ---------- ch / h ----------
+// rules: sz = ch wymienia się na sz, end = ch na końcu wyrazu, s = ch po s, ch0 = ch niewymienne,
+// hw = h wymienia się na g/ż/z (4th field = the letter), h0 = h niewymienne
+const CH_BANK = parseBank([
+  ['mu[ch]a','sz','muszka'], ['u[ch]o','sz','uszko'], ['ci[ch]o','sz','ciszej'], ['su[ch]y','sz','suszyć'], ['bla[ch]a','sz','blaszka'], ['du[ch]y','sz','duszek'],
+  ['da[ch]','end'], ['stra[ch]','end'], ['brzu[ch]','end'], ['gro[ch]','end'], ['pia[ch]','end'], ['ru[ch]','end'], ['zapa[ch]','end'], ['me[ch]','end'], ['pu[ch]','end'],
+  ['s[ch]ody','s'], ['s[ch]ronisko','s'], ['s[ch]ować','s'], ['s[ch]ab','s'], ['s[ch]udnąć','s'],
+  ['[ch]leb','ch0'], ['[ch]mura','ch0'], ['[ch]ory','ch0'], ['[ch]omik','ch0'], ['[ch]łopiec','ch0'], ['[ch]oinka','ch0'], ['[ch]usteczka','ch0'],
+  ['[ch]odnik','ch0'], ['ku[ch]nia','ch0'], ['[ch]wila','ch0'], ['[ch]rupki','ch0'], ['ko[ch]ać','ch0'], ['[ch]ata','ch0'], ['ku[ch]arz','ch0'], ['[ch]ętnie','ch0'],
+  ['dru[h]','hw','drużyna','ż'],
+  ['[h]ak','h0'], ['[h]erbata','h0'], ['[h]ipopotam','h0'], ['[h]arcerz','h0'], ['[h]uśtawka','h0'], ['[h]ałas','h0'], ['[h]amak','h0'], ['[h]otel','h0'],
+  ['[h]ulajnoga','h0'], ['[h]okej','h0'], ['[h]ełm','h0'], ['bo[h]ater','h0'], ['[h]amulec','h0'], ['[h]armonijka','h0'], ['wa[h]adło','h0'], ['[h]ejnał','h0'],
+]);
+function reasonCH(b) {
+  if (b.r === 'sz') return { t: `${b.w} → ${b.p}: ch wymienia się na sz`, r: 'sz' };
+  if (b.r === 'end') return { t: b.p ? `${b.p}: na końcu wyrazu piszemy ch` : 'na końcu wyrazu piszemy ch', r: 'end' };
+  if (b.r === 's') return { t: 'po „s” piszemy ch', r: 's' };
+  if (b.r === 'hw') return { t: `${b.w} → ${b.p}: h wymienia się na ${b.s} (wyjątek)`, r: 'hw' };
+  if (b.r === 'h0') return { t: 'h niewymienne: to słowo trzeba zapamiętać', r: 'h0' };
+  return { t: 'ch niewymienne: to słowo trzeba zapamiętać', r: 'ch0' };
+}
+
+// word → {gap letters → {r, p, s}}, from a bank plus inflected forms used in dyktanda
+function formsMap(bank, extra) {
+  const m = new Map();
+  const add = (w, l, e) => { if (!m.has(w)) m.set(w, {}); m.get(w)[l] = e; };
+  bank.forEach(b => add(b.w.toLowerCase(), b.l, b));
+  for (const [w, per] of Object.entries(extra)) for (const [l, [r, p, s]] of Object.entries(per)) add(w, l, { r, p, s });
+  return m;
+}
+const RZ_FORMS = formsMap(RZ_BANK, {
+  'jeżyny': { 'ż': ['z0'] }, 'rzeki': { rz: ['rz0'] }, 'rzeką': { rz: ['rz0'] }, 'rzece': { rz: ['rz0'] }, 'żuraw': { 'ż': ['z0'] },
+  'lekarzem': { rz: ['ar'] }, 'żołnierzem': { 'ż': ['z0'], rz: ['ar'] }, 'łóżku': { 'ż': ['z0'] }, 'żółtą': { 'ż': ['z0'] },
+  'podwórzu': { rz: ['r', 'dwór'] }, 'orzechy': { rz: ['rz0'] }, 'łyżwach': { 'ż': ['z0'] }, 'porzeczki': { rz: ['rz0'] },
+  'róże': { 'ż': ['z0'] }, 'plaży': { 'ż': ['z0'] }, 'morzem': { rz: ['r', 'morski'] },
+});
+const CH_FORMS = formsMap(CH_BANK, {
+  'dachu': { ch: ['end', 'dach'] }, 'chowa': { ch: ['ch0'] }, 'chomika': { ch: ['ch0'] }, 'kuchni': { ch: ['ch0'] },
+  'huśtawce': { h: ['h0'] }, 'herbatę': { h: ['h0'] }, 'hotelu': { h: ['h0'] }, 'chodniku': { ch: ['ch0'] }, 'hałas': { h: ['h0'] },
+});
+// explain a gap in any word; word may be capitalised, at = index of the gap, l = expected letters
+function reasonGap(set, word, at, l) {
+  const lw = word.toLowerCase(); l = l.toLowerCase();
+  if (set === 'ou') return reasonOU(word, at);
+  const e = ((set === 'rz' ? RZ_FORMS : CH_FORMS).get(lw) || {})[l];
+  let r = e && e.r;
+  if (!r && set === 'rz') r = l === 'ż' ? 'z0' : RZ_PO.includes(prevLetter(lw, at)) ? 'po' : at === lw.length - 2 && 'ae'.includes(lw[at - 1]) ? 'ar' : 'rz0';
+  if (!r && set === 'ch') r = l === 'h' ? 'h0' : at === lw.length - 2 ? 'end' : lw[at - 1] === 's' ? 's' : 'ch0';
+  const b = { w: lw, i: at, l, r, p: e && e.p, s: e && e.s };
+  return set === 'rz' ? reasonRZ(b) : reasonCH(b);
 }
 
 // ---------- litery i głoski ----------
@@ -506,6 +560,14 @@ const CHEAT = {
     ['zw', 'ż', 'wymienia się na g, dz, h, z, s', 'książka → księga'],
     ['z0', 'ż', 'niewymienne: zapamiętaj', 'żaba, jeż'],
   ],
+  ch: [
+    ['sz', 'ch', 'wymienia się na sz', 'mucha → muszka'],
+    ['end', 'ch', 'na końcu wyrazu', 'dach, strach (wyjątek: druh)'],
+    ['s', 'ch', 'po literze s', 'schody, schować'],
+    ['ch0', 'ch', 'niewymienne: zapamiętaj', 'chleb, chmura'],
+    ['hw', 'h', 'rzadko wymienia się na ż', 'druh → drużyna'],
+    ['h0', 'h', 'niewymienne: zapamiętaj', 'hak, herbata'],
+  ],
   lg: [
     ['lit', '', 'Literę piszemy i widzimy. Głoskę mówimy i słyszymy.', ''],
     ['dwu', '', 'Dwuznaki ch, cz, dz, dź, dż, rz, sz: 2 litery, 1 głoska', 'szafa: 5 liter, 4 głoski'],
@@ -525,7 +587,18 @@ const CHEAT = {
   ],
 };
 
+// every ó/u (set ou), rz/ż (set rz, but not the ż in dż) or ch/h (set ch) in a sentence becomes a gap
+const DK_SETS = {
+  ou: { title: 'Ó i U', pair: ['ó', 'u'], keys: { o: 'ó', 'ó': 'ó', u: 'u' }, kbd: '<kbd>O</kbd> to ó · <kbd>U</kbd> to u' },
+  rz: { title: 'Rz i Ż', pair: ['rz', 'ż'], keys: { r: 'rz', z: 'ż', 'ż': 'ż' }, kbd: '<kbd>R</kbd> to rz · <kbd>Z</kbd> to ż' },
+  ch: { title: 'Ch i H', pair: ['ch', 'h'], keys: { c: 'ch', h: 'h' }, kbd: '<kbd>C</kbd> to ch · <kbd>H</kbd> to h' },
+};
 const DYKTANDA = [
+  { id: 'rz-las', set: 'rz', t: 'W lesie', s: ['Na drzewie siedzi orzeł.', 'Pod brzozą rosną grzyby i jeżyny.', 'Jeż chowa się w krzakach.', 'Żaba skacze do rzeki.', 'Nad rzeką przelatuje żuraw.'] },
+  { id: 'rz-dom', set: 'rz', t: 'Dom i szkoła', s: ['Babcia nalewa żurek na talerz.', 'Mój brat chce zostać lekarzem, a ja żołnierzem.', 'Przy łóżku stoi krzesło.', 'Moja książka ma żółtą okładkę.', 'Na podwórzu rośnie wierzba.'] },
+  { id: 'rz-pory', set: 'rz', t: 'Pory roku', s: ['We wrześniu zaczyna się szkoła.', 'Jesienią na drzewach dojrzewają orzechy.', 'Zimą dzieci ślizgają się na łyżwach po rzece.', 'Wiosną kwitną porzeczki i róże.', 'Latem bawimy się na plaży nad morzem.'] },
+  { id: 'ch-zw', set: 'ch', t: 'Zwierzęta', s: ['Mucha usiadła na dachu.', 'Chomik je groch.', 'Hipopotam ma wielki brzuch.', 'Kot chowa się pod schodami.', 'Hałas wystraszył chomika.'] },
+  { id: 'ch-dom', set: 'ch', t: 'Dom i miasto', s: ['Mama piecze chleb w kuchni.', 'Na huśtawce siedzi harcerz.', 'Tata pije herbatę, bo jest chory.', 'W hotelu było cicho.', 'Na chodniku leży suchy liść.'] },
   { id: 'wies', t: 'Na wsi', s: ['Krówka i kózka chodzą po ogródku.', 'Kura gdacze, a kogut pieje.', 'Przed stodołą stoi duży wóz.', 'Pszczółki zbierają miód z kwiatów.', 'Mały żuk siedzi pod ogórkiem.'] },
   { id: 'zima', t: 'Zima', s: ['Na dworze jest mróz i dużo śniegu.', 'Dzieci zjeżdżają na sankach z dużej górki.', 'Na stawie leży gruby lód.', 'Mama kupiła mi ciepłe buty i kożuszek.', 'Wróbel szuka okruszków.'] },
   { id: 'szkola', t: 'W szkole', s: ['Uczeń rysuje kółko w zeszycie.', 'Na półce leżą ołówki i pióra.', 'Moja przyjaciółka ma żółty plecak.', 'Pani pokazuje nam rysunek króla.', 'Po szkole uczniowie wracają do domów.'] },
@@ -642,7 +715,7 @@ function btn(label, cls, fn) {
   b.type = 'button'; b.className = 'btn ' + cls; b.textContent = label; b.onclick = fn; return b;
 }
 // put letter c into the slot, keeping the case of the expected letter
-const withCase = (c, ref) => ref === ref.toUpperCase() ? c.toUpperCase() : c;
+const withCase = (c, ref) => ref[0] !== ref[0].toLowerCase() ? c[0].toUpperCase() + c.slice(1) : c;
 
 // ---------- mini cheat sheet ----------
 function cheatBox(set) {
@@ -849,6 +922,13 @@ Spelling({
   keys: { r: 'rz', arrowleft: 'rz', z: 'ż', 'ż': 'ż', arrowright: 'ż' },
   kbd: '<kbd>R</kbd> albo <kbd>←</kbd> to rz · <kbd>Z</kbd> albo <kbd>→</kbd> to ż',
 });
+Spelling({
+  id: 'ch', bank: CH_BANK, pair: ['ch', 'h'], cheat: 'ch',
+  groups: [['all', 'Wszystkie'], ['ch', 'Z ch'], ['h', 'Z h']],
+  reason: reasonCH, keyOf: b => 'ch:' + b.w,
+  keys: { c: 'ch', arrowleft: 'ch', h: 'h', arrowright: 'h' },
+  kbd: '<kbd>C</kbd> albo <kbd>←</kbd> to ch · <kbd>H</kbd> albo <kbd>→</kbd> to h',
+});
 
 // ---------- number answer buttons (shared by litery and sylaby) ----------
 function numberOpts(a, values, cls = '') {
@@ -1042,11 +1122,18 @@ Quiz({
 const DK = (() => {
   let D = null;
   const LETTER = /\p{L}/u;
-  $('dk-cheat').innerHTML = cheatBox('ou');
-
-  function parse(text) {
-    const gaps = [];
-    [...text].forEach((ch, i) => { if ('óuÓU'.includes(ch)) gaps.push({ i, want: ch, got: null }); });
+  function parse(text, set) {
+    const chars = [...text], gaps = [];
+    for (let i = 0; i < chars.length; i++) {
+      const c = chars[i].toLowerCase(), two = c + (chars[i + 1] || '').toLowerCase(), prev = (chars[i - 1] || '').toLowerCase();
+      let n = 0;
+      if (set === 'ou' && (c === 'ó' || c === 'u')) n = 1;
+      else if (set === 'rz' && two === 'rz') n = 2;
+      else if (set === 'rz' && c === 'ż' && prev !== 'd') n = 1;
+      else if (set === 'ch' && two === 'ch') n = 2;
+      else if (set === 'ch' && c === 'h') n = 1;
+      if (n) { gaps.push({ i, n, want: chars.slice(i, i + n).join(''), got: null }); i += n - 1; }
+    }
     return { text, gaps, checked: false };
   }
   // whole word around position i and the index of i inside it
@@ -1061,17 +1148,21 @@ const DK = (() => {
   const GRADE_TEXT = { 6: 'Celująco! Ani jednego błędu!', 5: 'Bardzo dobrze!', 4: 'Dobrze!', 3: 'Nieźle, poćwiczmy jeszcze.', 2: 'Spróbuj jeszcze raz, będzie lepiej.', 1: 'Spróbuj jeszcze raz, będzie lepiej.' };
 
   function renderList() {
-    $('dk-list').innerHTML = DYKTANDA.map((d, n) => {
-      const g = store.dk[d.id];
-      return `<button class="dk-item" type="button" data-n="${n}"><b>${n + 1}. ${esc(d.t)}</b><span>${d.s.length} zdań</span>
-        <span class="grade ${g ? '' : 'none'}" aria-label="${g ? 'najlepsza ocena ' + g : 'jeszcze nie pisane'}">${g || '–'}</span></button>`;
-    }).join('');
+    $('dk-list').innerHTML = Object.entries(DK_SETS).map(([set, cfg]) => `<section class="sc-section"><h2>${cfg.title}</h2><div class="dk-list">${
+      DYKTANDA.map((d, n) => [d, n]).filter(([d]) => (d.set || 'ou') === set).map(([d, n], k) => {
+        const g = store.dk[d.id];
+        return `<button class="dk-item" type="button" data-n="${n}"><b>${k + 1}. ${esc(d.t)}</b><span>${d.s.length} zdań</span>
+          <span class="grade ${g ? '' : 'none'}" aria-label="${g ? 'najlepsza ocena ' + g : 'jeszcze nie pisane'}">${g || '–'}</span></button>`;
+      }).join('')}</div></section>`).join('');
   }
   $('dk-list').addEventListener('click', e => { const b = e.target.closest('[data-n]'); if (b) start(+b.dataset.n); });
 
   function start(n) {
-    const d = DYKTANDA[n];
-    D = { d, n: 0, sentences: d.s.map(parse), active: 0 };
+    const d = DYKTANDA[n], set = d.set || 'ou', cfg = DK_SETS[set];
+    D = { d, set, n: 0, sentences: d.s.map(t => parse(t, set)), active: 0 };
+    $('dk-keys').innerHTML = cfg.pair.map((l, i) => `<button class="key k${i}" type="button" data-l="${l}" aria-label="${l}">${l}</button>`).join('');
+    $('dk-kbd').innerHTML = cfg.kbd;
+    $('dk-cheat').innerHTML = cheatBox(set);
     $('dk-choose').classList.add('hidden');
     $('dk-summary').classList.add('hidden');
     $('dk-play').classList.remove('hidden');
@@ -1108,12 +1199,18 @@ const DK = (() => {
     const cls = 'gap' + (g.got ? '' : ' empty') + (k === D.active ? ' active' : '');
     return `<span class="${cls}" data-k="${k}" role="button" tabindex="-1" aria-label="luka ${k + 1}">${g.got ? esc(g.got) : ''}</span>`;
   }
+  // each word is kept on one line, so a gap never splits it
   function sentenceHTML(s) {
-    let out = '', k = 0;
-    [...s.text].forEach((ch, i) => {
-      if (s.gaps[k] && s.gaps[k].i === i) { out += gapHTML(s, s.gaps[k], k); k++; }
-      else out += esc(ch);
-    });
+    const chars = [...s.text];
+    let out = '', word = '', k = 0;
+    const flush = () => { if (word) out += `<span class="wd">${word}</span>`; word = ''; };
+    for (let i = 0; i < chars.length; i++) {
+      const g = s.gaps[k];
+      if (g && g.i === i) { word += gapHTML(s, g, k); k++; i += g.n - 1; }
+      else if (LETTER.test(chars[i])) word += esc(chars[i]);
+      else { flush(); out += esc(chars[i]); }
+    }
+    flush();
     return out;
   }
   function render() {
@@ -1154,7 +1251,7 @@ const DK = (() => {
     render();
     const chars = [...s.text];
     const bad = s.gaps.filter(g => g.got !== g.want);
-    const why = bad.map(g => { const { word, at } = wordAt(chars, g.i); return { word, r: reasonOU(word, at) }; });
+    const why = bad.map(g => { const { word, at } = wordAt(chars, g.i); return { word, r: reasonGap(D.set, word, at, g.want) }; });
     $('dk-corr').innerHTML = bad.length
       ? why.map(x => `<p><span class="w">${esc(x.word)}</span>: ${esc(x.r.t)}</p>`).join('')
       : `<p class="ok">${praise()} Wszystko dobrze.</p>`;
@@ -1203,9 +1300,8 @@ const DK = (() => {
 
   function key(e) {
     if (!D || $('dk-play').classList.contains('hidden')) return;
-    const k = e.key.toLowerCase(), s = S();
-    if (!s.checked && (k === 'o' || k === 'ó')) { e.preventDefault(); put('ó'); }
-    else if (!s.checked && k === 'u') { e.preventDefault(); put('u'); }
+    const k = e.key.toLowerCase(), s = S(), l = DK_SETS[D.set].keys[k];
+    if (!s.checked && l) { e.preventDefault(); put(l); }
     else if (k === 'backspace') { e.preventDefault(); back(); }
     else if (k === 'arrowleft' && !s.checked) { D.active = Math.max(0, D.active - 1); render(); }
     else if (k === 'arrowright' && !s.checked) { D.active = Math.min(s.gaps.length - 1, D.active + 1); render(); }
@@ -1236,6 +1332,14 @@ const SC_SPELLING = [
     { L: 'rz', t: 'rz niewymienne', d: 'Te słowa trzeba zapamiętać.', keys: ['rz0'] },
     { L: 'ż', t: 'ż wymienia się na g, dz, h, z, s', d: 'Jeśli w innym słowie z tej samej rodziny jest w tym miejscu g, dz, h, z albo s, piszemy ż.', keys: ['zw'], u: true },
     { L: 'ż', t: 'ż niewymienne', d: 'Te słowa trzeba zapamiętać.', keys: ['z0'], u: true },
+  ] },
+  { title: 'Ch i H', bank: CH_BANK, keyOf: b => 'ch:' + b.w, rules: [
+    { L: 'ch', t: 'ch wymienia się na sz', d: 'Jeśli w innym słowie z tej samej rodziny jest w tym miejscu sz, piszemy ch.', keys: ['sz'] },
+    { L: 'ch', t: 'ch na końcu wyrazu', d: 'Na końcu wyrazu piszemy ch. Wyjątek: druh.', keys: ['end'] },
+    { L: 'ch', t: 'ch po literze s', d: 'Po s zawsze piszemy ch.', keys: ['s'] },
+    { L: 'ch', t: 'ch niewymienne', d: 'Te słowa trzeba zapamiętać.', keys: ['ch0'] },
+    { L: 'h', t: 'h wymienia się na g, ż, z', d: 'Zdarza się rzadko.', keys: ['hw'], u: true },
+    { L: 'h', t: 'h niewymienne', d: 'Te słowa trzeba zapamiętać.', keys: ['h0'], u: true },
   ] },
 ];
 function renderSciaga() {
