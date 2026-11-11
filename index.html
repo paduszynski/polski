@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Polski – ortografia dla dzieci</title>
-<meta name="version" content="1.0">
-<meta name="description" content="Polski – ćwiczenia z ortografii dla dzieci: ó czy u, dyktanda z lektorem i ściąga z regułami.">
+<title>Polski – ćwiczenia dla dzieci</title>
+<meta name="version" content="1.1">
+<meta name="description" content="Polski – ćwiczenia dla dzieci: ó czy u, rz czy ż, dyktanda z lektorem, alfabet, litery i głoski, sylaby.">
 <meta name="theme-color" content="#1f3d99">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -39,7 +39,7 @@ body{
     repeating-linear-gradient(to bottom,transparent 0 calc(var(--row) - 1px),var(--line) calc(var(--row) - 1px) var(--row));
 }
 button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,[tabindex]:focus-visible{outline:3px dashed var(--ink);outline-offset:3px}
+button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{outline:3px dashed var(--ink);outline-offset:3px}
 a{color:var(--ink)}
 .wrap{max-width:1400px;margin:0 auto;
   padding-left:max(calc(var(--mx) + 14px),env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
@@ -60,11 +60,13 @@ header .wrap{display:flex;align-items:center;gap:12px;min-height:60px;padding-bl
 .menu-btn[aria-expanded="true"] .burger i:nth-child(2){opacity:0}
 .menu-btn[aria-expanded="true"] .burger i:nth-child(3){transform:translateY(-8px) rotate(-45deg);width:100%}
 .menu{position:absolute;right:14px;top:100%;margin-top:8px;z-index:30;background:var(--paper);border:2px solid var(--ink);border-radius:8px 12px 7px 11px;
-  box-shadow:0 14px 30px -12px rgba(31,61,153,.45);padding:8px;display:flex;flex-direction:column;gap:4px;width:min(360px,calc(100vw - 28px))}
+  box-shadow:0 14px 30px -12px rgba(31,61,153,.45);padding:8px;display:flex;flex-direction:column;gap:2px;width:min(360px,calc(100vw - 28px));max-height:calc(100svh - 90px);overflow:auto}
 .menu[hidden]{display:none}
-.menu-item{text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:8px;display:flex;flex-direction:column;gap:2px}
-.menu-item b{font-weight:400;font-size:1.35rem;line-height:1.1;color:var(--ink)}
-.menu-item span{color:var(--muted);font-size:1rem}
+.menu-group{margin:8px 12px 0;font-size:.9rem;letter-spacing:.06em;text-transform:uppercase;color:var(--red)}
+.menu-group:first-child{margin-top:2px}
+.menu-item{text-align:left;border:0;background:transparent;padding:7px 12px;border-radius:8px;display:flex;flex-direction:column;gap:1px}
+.menu-item b{font-weight:400;font-size:1.3rem;line-height:1.1;color:var(--ink)}
+.menu-item span{color:var(--muted);font-size:.95rem}
 .menu-item:hover{background:var(--ink-soft)}
 .menu-item[aria-current="true"] b{color:var(--red)}
 
@@ -100,41 +102,91 @@ main{padding:14px 0 28px}
 .btn:active{transform:scale(.97)}
 .btn.primary{border-color:var(--ink);color:var(--ink)}
 .btn.red{border-color:var(--red);color:var(--red)}
+.btn.small{flex:none;min-height:0;padding:6px 16px;font-size:1.2rem}
 .btn:disabled{opacity:.4;cursor:default;transform:none}
 .actions{display:flex;gap:12px;justify-content:center;width:100%;max-width:620px;margin:0 auto;flex-wrap:wrap}
 .keys{display:flex;gap:18px;justify-content:center}
 .key{width:min(34vw,130px);height:min(34vw,130px);border-radius:22px 18px 24px 19px;border:3px solid currentColor;background:var(--paper);
-  font-size:clamp(3.4rem,15vw,4.6rem);line-height:1;display:grid;place-items:center;box-shadow:0 5px 0 currentColor;padding:0}
-.key.o{color:var(--red)} .key.u{color:var(--ink)}
+  font-size:clamp(3.2rem,14vw,4.4rem);line-height:1;display:grid;place-items:center;box-shadow:0 5px 0 currentColor;padding:0}
+.key.k0{color:var(--red)} .key.k1{color:var(--ink)}
 .key:active{transform:translateY(4px);box-shadow:0 1px 0 currentColor}
-.key:disabled{opacity:.35;cursor:default}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:520px;margin:0 auto}
+.opts.five{grid-template-columns:repeat(5,1fr)}
+.opt{min-height:72px;border:3px solid var(--ink);color:var(--ink);background:var(--paper);border-radius:16px 13px 18px 14px;font-size:2.4rem;line-height:1;box-shadow:0 4px 0 var(--ink);padding:0}
+.opt:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.opt.good{border-color:var(--green);color:var(--green);box-shadow:0 4px 0 var(--green)}
+.opt.bad{border-color:var(--red);color:var(--red);box-shadow:0 4px 0 var(--red)}
+.locked button{pointer-events:none}
+.locked .key,.locked .opt:not(.good):not(.bad),.locked .wbtn{opacity:.35}
 .kbd-hint{text-align:center;color:var(--muted);font-size:1rem;margin:0}
 kbd{font-family:inherit;border:1.5px solid var(--muted);border-bottom-width:3px;border-radius:6px;padding:0 6px}
 @media (hover:none){.kbd-hint{display:none}}
 
-/* ---------- Ó czy U card ---------- */
-.card{width:100%;max-width:620px;margin:0 auto;min-height:clamp(220px,34svh,320px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;
+/* ---------- question card ---------- */
+.card{width:100%;max-width:620px;margin:0 auto;min-height:clamp(220px,32svh,320px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;
   border:2px solid var(--line);border-radius:16px 12px 18px 13px;background:var(--paper);padding:18px 12px;position:relative}
 .card.ok{border-color:var(--green)} .card.bad{border-color:var(--red)}
+.card .q{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
 .badge{position:absolute;top:8px;right:12px;font-size:1rem;color:var(--red)}
-.qword{margin:0;font-size:clamp(3.4rem,17vw,5.4rem);line-height:1.05;letter-spacing:.02em;color:var(--pencil);overflow-wrap:anywhere}
+.qword{margin:0;font-size:clamp(3.2rem,16vw,5.2rem);line-height:1.05;letter-spacing:.02em;color:var(--pencil);overflow-wrap:anywhere}
+.ask{margin:0;font-size:1.35rem;color:var(--muted)}
 .gap{display:inline-block;min-width:.5em;text-align:center;border-bottom:3px dashed var(--red);line-height:1;color:var(--ink);position:relative;padding:0}
 .gap.empty{min-width:.66em}
 .gap.empty::before{content:"?";color:var(--line)}
 .gap.good{border-bottom:3px solid var(--green);color:var(--ink)}
 .gap.wrong{border-bottom-color:transparent}
 .gap.wrong s{color:var(--red);text-decoration-thickness:.09em;opacity:.75}
-.gap.wrong .fix{position:absolute;left:50%;transform:translateX(-50%) rotate(-6deg);bottom:96%;color:var(--red);font-size:.8em;font-weight:400}
+.gap.wrong .fix{position:absolute;left:50%;transform:translateX(-50%) rotate(-6deg);bottom:96%;color:var(--red);font-size:.8em;font-weight:400;white-space:nowrap}
 .fb{margin:0;font-size:1.35rem;min-height:1.3em}
 .fb b{font-weight:400}
 .card.ok .fb b{color:var(--green)} .card.bad .fb b{color:var(--red)}
-.why{margin:0;font-size:1.1rem;color:var(--muted);min-height:1.3em}
+.why{margin:0;font-size:1.15rem;color:var(--pencil);min-height:1.3em;max-width:34ch}
 .say{border:2px solid var(--ink);color:var(--ink);background:var(--paper);border-radius:999px;display:inline-flex;align-items:center;gap:6px;padding:4px 14px;font-size:1.1rem}
 .say svg{width:20px;height:20px}
 .pop{animation:pop .35s}
 @keyframes pop{50%{transform:scale(1.03)}}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(-8px)}50%{transform:translateX(7px)}75%{transform:translateX(-4px)}}
+
+/* breakdowns: letters/sounds, syllables, alphabet */
+.split{display:flex;flex-direction:column;gap:8px;align-items:center}
+.brow{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.tag{font-size:1rem;color:var(--muted);width:4em;text-align:right;margin-right:4px;align-self:center}
+.lb,.gb{min-width:1.45em;padding:2px 5px;border:2px solid var(--line);border-radius:8px;font-size:1.8rem;line-height:1.1;text-align:center;background:var(--paper);display:inline-flex;flex-direction:column;align-items:center}
+.gb.two{border-color:var(--red);color:var(--red)}
+.gb small{font-size:.85rem;color:var(--muted);line-height:1}
+.syl{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.syl span{border:2px solid var(--ink);border-radius:10px;padding:0 10px;font-size:clamp(1.8rem,8vw,2.4rem);color:var(--ink)}
+.syl.mine span{border-color:var(--red);color:var(--red);font-size:1.3rem;padding:0 6px}
+.letters{display:flex;justify-content:center;flex-wrap:nowrap;max-width:100%}
+.letters button{border:0;background:none;font-size:clamp(2rem,10vw,3.4rem);padding:0 1px;line-height:1.25;min-width:.75em;position:relative;color:var(--pencil);border-bottom:3px dotted var(--line)}
+.letters button.cut{margin-right:.45em}
+.letters button.cut::after{content:"";position:absolute;right:-.27em;top:12%;bottom:12%;width:4px;background:var(--red);border-radius:2px}
+.order{display:flex;flex-direction:column;gap:4px;width:100%;max-width:420px;margin:0 auto;padding:0;list-style:none;counter-reset:n;text-align:left}
+.order li{counter-increment:n;border-bottom:2px dashed var(--line);min-height:44px;display:flex;align-items:center;gap:8px;font-size:1.8rem}
+.order li::before{content:counter(n) ".";color:var(--muted);font-size:1.2rem;width:1.5em}
+.order li.good{color:var(--green)} .order li.bad{color:var(--red)}
+.order li small{font-size:1.1rem;color:var(--green)}
+.pool{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.wbtn{border:2.5px solid var(--ink);color:var(--ink);background:var(--paper);border-radius:12px 9px 14px 10px;padding:6px 16px;font-size:1.7rem;box-shadow:0 3px 0 var(--ink)}
+.wbtn:disabled{opacity:.2;box-shadow:none}
+.strip{display:flex;gap:4px;justify-content:center;flex-wrap:wrap}
+.strip span{min-width:1.5em;padding:2px 4px;border:2px solid var(--line);border-radius:8px;font-size:1.6rem;text-align:center;line-height:1.1}
+.strip .me{border-color:var(--ink);color:var(--ink)}
+.strip .ans{border-color:var(--green);color:var(--green);background:#eaf7ef}
+.strip .pl,.abc .pl{color:var(--red)}
+
+/* ---------- mini cheat sheet under the exercise ---------- */
+.cheat{width:100%;max-width:620px;margin:4px auto 0;border-top:2px dashed var(--line);padding-top:8px}
+.cheat summary{cursor:pointer;color:var(--red);font-size:1.2rem;list-style:none;display:inline-block}
+.cheat summary::-webkit-details-marker{display:none}
+.cheat summary::before{content:"▸ "}
+.cheat[open] summary::before{content:"▾ "}
+.cheat ul{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:2px;font-size:1.05rem}
+.cheat li{padding:3px 8px;border-radius:6px;border-left:4px solid transparent;line-height:1.25}
+.cheat li b{font-weight:400;color:var(--red)}
+.cheat li i{font-style:normal;color:var(--muted)}
+.cheat li.hit{background:var(--hi);border-left-color:var(--red)}
 
 /* ---------- summary ---------- */
 .summary{text-align:center;padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
@@ -146,6 +198,7 @@ kbd{font-family:inherit;border:1.5px solid var(--muted);border-bottom-width:3px;
 .chip{border:0;background:transparent;padding:0 4px 2px;font-size:1.35rem;line-height:1.15;border-bottom:4px solid var(--line)}
 .chip.l1{border-color:var(--l1)} .chip.l2{border-color:var(--l2)} .chip.l3{border-color:var(--l3)} .chip.l4{border-color:var(--l4)}
 .chip.miss{color:var(--red);border-color:var(--red)}
+.chip em{font-style:normal}
 
 /* ---------- dyktando ---------- */
 .dk-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:14px;max-width:1100px}
@@ -169,7 +222,7 @@ kbd{font-family:inherit;border:1.5px solid var(--muted);border-bottom-width:3px;
 .sentence .gap{cursor:pointer;border-radius:4px 4px 0 0}
 .sentence .gap.active{background:var(--hi);border-bottom-style:solid;border-bottom-color:var(--ink)}
 .sentence.checked .gap{cursor:default}
-.corrections{max-width:760px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:4px;font-size:1.15rem;min-height:0}
+.corrections{max-width:760px;margin:0 auto;width:100%;display:flex;flex-direction:column;gap:4px;font-size:1.15rem}
 .corrections p{margin:0}
 .corrections .w{color:var(--red)}
 .corrections .ok{color:var(--green)}
@@ -177,22 +230,25 @@ kbd{font-family:inherit;border:1.5px solid var(--muted);border-bottom-width:3px;
 .dk-summary h2{margin:0;font-size:2rem;font-weight:400;color:var(--ink)}
 .dk-summary .sentence{font-size:clamp(1.4rem,5.5vw,1.9rem);line-height:2;padding:0;border-bottom:1px dashed var(--line)}
 .dk-sheet{display:flex;flex-direction:column;gap:6px;width:100%}
+#dk-play .cheat{max-width:760px}
 
 /* ---------- ściąga ---------- */
+.sc-section{margin-bottom:30px}
+.sc-section > h2{margin:0 0 12px;font-size:1.7rem;font-weight:400;color:var(--red);display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.sc-section > h2 span{font-size:1.05rem;color:var(--muted)}
 .rules{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:16px}
 .rule{border:2px solid var(--line);border-radius:14px 11px 16px 12px;background:var(--paper);padding:14px 16px;display:flex;flex-direction:column;gap:8px}
-.rule h3{margin:0;font-weight:400;font-size:1.45rem;line-height:1.1;display:flex;gap:10px;align-items:baseline}
-.rule h3 .L{font-size:2.2rem;line-height:.8;color:var(--red)}
+.rule h3{margin:0;font-weight:400;font-size:1.4rem;line-height:1.1;display:flex;gap:10px;align-items:baseline}
+.rule h3 .L{font-size:2rem;line-height:.8;color:var(--red)}
 .rule.u h3 .L{color:var(--ink)}
 .rule p{margin:0;font-size:1.1rem;color:var(--muted)}
 .rule .chips{justify-content:flex-start}
 .ex{color:var(--pencil)}
 .ex em{font-style:normal;color:var(--red)}
 .rule.u .ex em{color:var(--ink)}
-.words-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.words-head h2{margin:0;font-size:1.6rem;font-weight:400;color:var(--red)}
-.overall{color:var(--muted)}
-.words-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.abc{display:flex;flex-wrap:wrap;gap:6px}
+.abc span{min-width:1.6em;padding:2px 4px;border:2px solid var(--line);border-radius:8px;font-size:1.5rem;text-align:center;line-height:1.1}
+.words-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:6px}
 .legend{display:flex;gap:6px 14px;flex-wrap:wrap;font-size:1rem;color:var(--muted)}
 .legend i{display:inline-block;width:18px;height:4px;vertical-align:middle;margin-right:5px;background:var(--line)}
 .link{border:0;background:none;color:var(--muted);padding:2px 0;font-size:1rem;text-decoration:underline wavy;text-underline-offset:4px}
@@ -219,78 +275,32 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.0">1.0</span></div>
+    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.1">1.1</span></div>
     <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
       <span class="menu-title" id="menu-title"></span>
       <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
     <nav class="menu" id="menu" hidden aria-label="Moduły">
+      <p class="menu-group">Ortografia</p>
       <button class="menu-item" type="button" data-tab="ou"><b>Ó czy U?</b><span>Wstaw brakującą literkę</span></button>
-      <button class="menu-item" type="button" data-tab="dyktando"><b>Dyktando</b><span>Posłuchaj zdania i uzupełnij ó i u</span></button>
-      <button class="menu-item" type="button" data-tab="sciaga"><b>Ściąga</b><span>Reguły i moje słowa</span></button>
+      <button class="menu-item" type="button" data-tab="rz"><b>Rz czy Ż?</b><span>Wstaw brakującą literkę</span></button>
+      <button class="menu-item" type="button" data-tab="dyktando"><b>Dyktando ó/u</b><span>Posłuchaj zdania i uzupełnij</span></button>
+      <p class="menu-group">Wiedza o języku</p>
+      <button class="menu-item" type="button" data-tab="ab"><b>Alfabet</b><span>Kolejność liter i wyrazów</span></button>
+      <button class="menu-item" type="button" data-tab="lg"><b>Litery i głoski</b><span>Policz litery i głoski</span></button>
+      <button class="menu-item" type="button" data-tab="sy"><b>Sylaby</b><span>Policz i podziel na sylaby</span></button>
+      <p class="menu-group">Pomoc</p>
+      <button class="menu-item" type="button" data-tab="sciaga"><b>Ściąga</b><span>Wszystkie reguły i moje słowa</span></button>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- ================= Ó czy U ================= -->
-  <section id="tab-ou" class="tabpanel" aria-label="Ó czy U?" hidden>
-    <div class="layout">
-      <aside class="panel settings" aria-label="Ustawienia">
-        <h2>Ustawienia</h2>
-        <div class="field">
-          <span class="label">Słowa</span>
-          <div class="seg" id="ou-set-group">
-            <button type="button" data-v="all">Wszystkie</button>
-            <button type="button" data-v="o">Z ó</button>
-            <button type="button" data-v="u">Z u</button>
-          </div>
-          <p class="hint" id="ou-count"></p>
-        </div>
-        <div class="field">
-          <span class="label">Ile słów w rundzie?</span>
-          <div class="seg" id="ou-set-size">
-            <button type="button" data-v="10">10</button>
-            <button type="button" data-v="20">20</button>
-          </div>
-        </div>
-        <div class="field">
-          <span class="label">Czytaj słowo na głos</span>
-          <div class="seg" id="ou-set-speak">
-            <button type="button" data-v="on">Tak</button>
-            <button type="button" data-v="off">Nie</button>
-          </div>
-        </div>
-        <div class="field">
-          <button class="btn primary" type="button" id="ou-new" style="flex:none;min-height:0;padding:6px 16px;font-size:1.2rem">Nowa runda ↻</button>
-        </div>
-      </aside>
-
-      <div class="stage">
-        <div class="stats">
-          <div class="stat ok"><b id="ou-s-ok">0</b><span>Dobrze</span></div>
-          <div class="stat bad"><b id="ou-s-bad">0</b><span>Błędy</span></div>
-          <div class="stat"><b id="ou-s-streak">0</b><span>Seria</span></div>
-          <div class="stat"><b id="ou-s-left">0</b><span>Zostało</span></div>
-        </div>
-        <div id="ou-play" class="stage">
-          <div class="card" id="ou-card" aria-live="polite">
-            <span class="badge" id="ou-badge"></span>
-            <p class="qword" id="ou-word"></p>
-            <p class="fb" id="ou-fb"></p>
-            <p class="why" id="ou-why"></p>
-          </div>
-          <div class="keys" id="ou-keys">
-            <button class="key o" type="button" data-l="ó" aria-label="ó">ó</button>
-            <button class="key u" type="button" data-l="u" aria-label="u">u</button>
-          </div>
-          <div class="actions"><button class="btn primary hidden" type="button" id="ou-next">Dalej →</button></div>
-          <p class="kbd-hint"><kbd>O</kbd> albo <kbd>←</kbd> to ó · <kbd>U</kbd> albo <kbd>→</kbd> to u · <kbd>Enter</kbd> dalej</p>
-        </div>
-        <div class="panel summary hidden" id="ou-summary"></div>
-      </div>
-    </div>
-  </section>
+  <section id="tab-ou" class="tabpanel" aria-label="Ó czy U?" hidden></section>
+  <section id="tab-rz" class="tabpanel" aria-label="Rz czy Ż?" hidden></section>
+  <section id="tab-ab" class="tabpanel" aria-label="Alfabet" hidden></section>
+  <section id="tab-lg" class="tabpanel" aria-label="Litery i głoski" hidden></section>
+  <section id="tab-sy" class="tabpanel" aria-label="Sylaby" hidden></section>
 
   <!-- ================= Dyktando ================= -->
   <section id="tab-dyktando" class="tabpanel" aria-label="Dyktando" hidden>
@@ -307,8 +317,8 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
       <p class="no-voice hidden" id="dk-novoice">Ten telefon nie ma polskiego głosu, więc przeczytaj zdanie samodzielnie.</p>
       <p class="sentence" id="dk-sentence"></p>
       <div class="keys" id="dk-keys">
-        <button class="key o" type="button" data-l="ó" aria-label="ó">ó</button>
-        <button class="key u" type="button" data-l="u" aria-label="u">u</button>
+        <button class="key k0" type="button" data-l="ó" aria-label="ó">ó</button>
+        <button class="key k1" type="button" data-l="u" aria-label="u">u</button>
       </div>
       <div class="corrections" id="dk-corr" aria-live="polite"></div>
       <div class="actions">
@@ -316,17 +326,14 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
         <button class="btn primary" type="button" id="dk-check" disabled>Sprawdź</button>
       </div>
       <p class="kbd-hint"><kbd>O</kbd> to ó · <kbd>U</kbd> to u · <kbd>⌫</kbd> cofnij · <kbd>Enter</kbd> sprawdź</p>
+      <div id="dk-cheat"></div>
     </div>
     <div id="dk-summary" class="dk-summary hidden"></div>
   </section>
 
   <!-- ================= Ściąga ================= -->
   <section id="tab-sciaga" class="tabpanel" aria-label="Ściąga" hidden>
-    <div class="words-head">
-      <h2>Reguły i moje słowa</h2>
-      <span class="overall" id="sc-overall"></span>
-    </div>
-    <div class="rules" id="sc-rules"></div>
+    <div id="sc-body"></div>
     <div class="words-foot">
       <div class="legend">
         <span><i></i>Jeszcze nie było</span>
@@ -340,15 +347,19 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
   </section>
 </main>
 
-<footer>Polski 1.0 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
+<footer>Polski 1.1 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
 <canvas id="confetti"></canvas>
 
 <script>
-// ---------- word bank ----------
+// =====================================================================
+// DATA
+// =====================================================================
+
+// ---------- ó / u ----------
 // [word with the gap in brackets, rule, proof]
-// rules: o/e/a = ó wymienia się na o/e/a (proof = the word that shows it), ow = końcówka -ów/-ówka,
-// zo = ó niewymienne, x0 = ó na początku (wyjątek), u0 = u na początku, uk = końcówki -uje/-unek/-uszek/-utki/-uch, uz = u niewymienne
-const BANK = [
+// rules: o/e/a = ó wymienia się na o/e/a (proof shows it), ow = końcówka -ów/-ówka, zo = ó niewymienne,
+// x0 = ó na początku (wyjątek), u0 = u na początku, uk = końcówki -uje/-unek/-uszek/-utki/-uch, uz = u niewymienne
+const OU_BANK = parseBank([
   ['w[ó]z','o','wozy'], ['r[ó]g','o','rogi'], ['st[ó]ł','o','stoły'], ['l[ó]d','o','lodowisko'], ['mr[ó]z','o','mrozy'],
   ['ogr[ó]d','o','ogrody'], ['d[ó]ł','o','doły'], ['k[ó]łko','o','koło'], ['n[ó]żka','o','noga'], ['dr[ó]żka','o','droga'],
   ['szk[ó]łka','o','szkoła'], ['pszcz[ó]łka','o','pszczoła'], ['gł[ó]wka','o','głowa'], ['kr[ó]wka','o','krowa'], ['k[ó]zka','o','koza'],
@@ -373,10 +384,7 @@ const BANK = [
   ['m[u]cha','uz'], ['k[u]ra','uz'], ['ż[u]k','uz'], ['b[u]t','uz'], ['szn[u]rek','uz'], ['d[u]ży','uz'], ['c[u]kier','uz'],
   ['dzi[u]ra','uz'], ['chm[u]ra','uz'], ['z[u]pa','uz'], ['k[u]bek','uz'], ['t[u]lipan','uz'], ['tr[u]skawka','uz'], ['l[u]stro','uz'],
   ['k[u]rtka','uz'], ['bl[u]za','uz'], ['p[u]dełko','uz'], ['b[u]dzik','uz'], ['sz[u]flada','uz'], ['p[u]szka','uz'], ['g[u]zik','uz'], ['b[u]rza','uz'],
-].map(([g, r, p]) => {
-  const i = g.indexOf('['), l = g[i + 1];
-  return { w: g.replace(/[\[\]]/g, ''), i, l, r, p };
-});
+]);
 
 // inflected forms used in dyktanda, so corrections can explain them
 const EXTRA_FORMS = {
@@ -384,41 +392,138 @@ const EXTRA_FORMS = {
   'ogórkiem': ['zo'], 'górki': ['zo'], 'półce': ['zo'], 'ołówki': ['zo'], 'króla': ['zo'], 'córce': ['zo'], 'córkę': ['zo'],
   'różowy': ['zo'], 'łóżkiem': ['zo'], 'królewna': ['zo'], 'róże': ['zo'],
 };
-const FORMS = new Map(BANK.map(b => [b.w.toLowerCase(), b]));
-for (const [w, [r, p]] of Object.entries(EXTRA_FORMS)) FORMS.set(w, { w, r, p });
+const OU_FORMS = new Map(OU_BANK.map(b => [b.w.toLowerCase(), b]));
+for (const [w, [r, p]] of Object.entries(EXTRA_FORMS)) OU_FORMS.set(w, { w, r, p });
 
 const O_RULES = ['o', 'e', 'a', 'ow', 'zo', 'x0'];
 const U_SUFFIX = [['uje', '-uje'], ['uję', '-uje'], ['unek', '-unek'], ['unk', '-unek'], ['uszek', '-uszek'], ['uszk', '-uszek'], ['utk', '-utki']];
 
-// Why is this letter written this way? word = whole word, i = index of the letter in it
-function reason(word, i) {
-  const lw = word.toLowerCase(), l = lw[i], info = FORMS.get(lw);
+// Why is this ó/u written this way? word = whole word, i = index of the letter. Returns {t: text, r: cheat-sheet line}
+function reasonOU(word, i) {
+  const lw = word.toLowerCase(), l = lw[i], info = OU_FORMS.get(lw);
   if (l === 'ó') {
     const r = info && O_RULES.includes(info.r) ? info.r : lw.endsWith('ów') && i === lw.length - 2 ? 'ow' : lw.startsWith('ówk', i) ? 'ow' : i === 0 ? 'x0' : null;
-    if (r === 'o' || r === 'e' || r === 'a') return `${lw} → ${info.p}: ó wymienia się na ${r}`;
-    if (r === 'ow') return lw.endsWith('ów') && i === lw.length - 2 ? 'końcówka -ów' : 'końcówka -ówka';
-    if (r === 'zo') return 'ó niewymienne: to słowo trzeba zapamiętać';
-    if (r === 'x0') return 'wyjątek: ósmy, ósemka piszemy przez ó';
-    return 'piszemy ó: zapamiętaj';
+    if (r === 'o' || r === 'e' || r === 'a') return { t: `${lw} → ${info.p}: ó wymienia się na ${r}`, r: 'wym' };
+    if (r === 'ow') return { t: lw.endsWith('ów') && i === lw.length - 2 ? 'końcówka -ów' : 'końcówka -ówka', r: 'ow' };
+    if (r === 'zo') return { t: 'ó niewymienne: to słowo trzeba zapamiętać', r: 'zo' };
+    if (r === 'x0') return { t: 'wyjątek: ósmy, ósemka piszemy przez ó', r: 'zo' };
+    return { t: 'piszemy ó: zapamiętaj', r: 'zo' };
   }
-  if (lw.length === 1) return 'małe słówko „u” piszemy zawsze przez u';
-  if (i === 0) return 'na początku słowa piszemy u';
-  if (i === lw.length - 1) return 'na końcu słowa piszemy zawsze u';
-  if (lw.endsWith('uch') && i === lw.length - 3) return 'końcówka -uch';
+  if (lw.length === 1) return { t: 'małe słówko „u” piszemy zawsze przez u', r: 'u0' };
+  if (i === 0) return { t: 'na początku słowa piszemy u', r: 'u0' };
+  if (i === lw.length - 1) return { t: 'na końcu słowa piszemy zawsze u', r: 'uend' };
+  if (lw.endsWith('uch') && i === lw.length - 3) return { t: 'końcówka -uch', r: 'uk' };
   const suf = U_SUFFIX.find(([s]) => lw.startsWith(s, i));
-  if (suf) return 'końcówka ' + suf[1];
-  return 'u niewymienne: to słowo trzeba zapamiętać';
+  if (suf) return { t: 'końcówka ' + suf[1], r: 'uk' };
+  return { t: 'u niewymienne: to słowo trzeba zapamiętać', r: 'uz' };
 }
 
-const RULES = [
-  { L: 'ó', t: 'ó wymienia się na o, e, a', d: 'Jeśli w innym słowie z tej samej rodziny jest w tym miejscu o, e albo a, piszemy ó.', keys: ['o', 'e', 'a'] },
-  { L: 'ó', t: 'Końcówki -ów i -ówka', d: 'kotów, domów, kwiatów · kreskówka, złotówka.', keys: ['ow'] },
-  { L: 'ó', t: 'ó niewymienne', d: 'Tego ó nie da się wymienić. Te słowa trzeba zapamiętać. Na początku słowa ó jest tylko w: ósmy, ósemka, ów.', keys: ['zo', 'x0'] },
-  { L: 'u', t: 'u na początku słowa', d: 'Na początku słowa piszemy u. Wyjątki: ósmy, ósemka, ów.', keys: ['u0'], u: true },
-  { L: 'u', t: 'u na końcu słowa', d: 'Ó nigdy nie stoi na końcu słowa.', ex: 'w ogródk<em>u</em> · w zamk<em>u</em> · w pokoj<em>u</em> · dużo śnieg<em>u</em> · t<em>u</em>', keys: [], u: true },
-  { L: 'u', t: 'Końcówki -uje, -unek, -uszek, -utki, -uch', d: 'maluje, rysunek, fartuszek, malutki, maluch.', keys: ['uk'], u: true },
-  { L: 'u', t: 'u niewymienne', d: 'Pozostałe u trzeba zapamiętać.', keys: ['uz'], u: true },
-];
+// ---------- rz / ż ----------
+// rules: r = rz wymienia się na r, po = rz po spółgłosce, ar = końcówki -arz/-erz, rz0 = rz niewymienne,
+// zw = ż wymienia się na g/dz/h/z/s (4th field = the letter), z0 = ż niewymienne
+const RZ_BANK = parseBank([
+  ['mo[rz]e','r','morski'], ['dwo[rz]ec','r','dwór'], ['skó[rz]any','r','skóra'], ['go[rz]ki','r','gorycz'], ['sta[rz]ec','r','stary'],
+  ['pie[rz]e','r','pióro'], ['two[rz]yć','r','twór'], ['rowe[rz]ysta','r','rower'], ['mie[rz]yć','r','miara'],
+  ['b[rz]oza','po'], ['b[rz]uch','po'], ['d[rz]ewo','po'], ['d[rz]wi','po'], ['g[rz]yb','po'], ['g[rz]ebień','po'], ['k[rz]esło','po'],
+  ['k[rz]ak','po'], ['p[rz]yjaciel','po'], ['p[rz]edszkole','po'], ['t[rz]y','po'], ['t[rz]miel','po'], ['w[rz]esień','po'], ['w[rz]os','po'],
+  ['ch[rz]an','po'], ['spoj[rz]eć','po'],
+  ['leka[rz]','ar'], ['mala[rz]','ar'], ['kucha[rz]','ar'], ['pieka[rz]','ar'], ['kalenda[rz]','ar'], ['tale[rz]','ar'], ['ryce[rz]','ar'],
+  ['harce[rz]','ar'], ['żołnie[rz]','ar'], ['bramka[rz]','ar'],
+  ['[rz]eka','rz0'], ['[rz]odkiewka','rz0'], ['bu[rz]a','rz0'], ['po[rz]eczka','rz0'], ['ma[rz]ec','rz0'], ['ko[rz]eń','rz0'], ['ja[rz]ębina','rz0'],
+  ['o[rz]ech','rz0'], ['ku[rz]','rz0'], ['wie[rz]ba','rz0'], ['wa[rz]ywa','rz0'], ['[rz]epa','rz0'], ['[rz]ęsy','rz0'], ['o[rz]eł','rz0'],
+  ['ksią[ż]ka','zw','księga','g'], ['wa[ż]yć','zw','waga','g'], ['odwa[ż]ny','zw','odwaga','g'], ['dró[ż]ka','zw','droga','g'], ['nó[ż]ka','zw','noga','g'],
+  ['pienią[ż]ek','zw','pieniądz','dz'], ['dru[ż]yna','zw','druh','h'], ['ma[ż]ę','zw','mazać','z'], ['wią[ż]e','zw','wiązać','z'],
+  ['bli[ż]ej','zw','blisko','s'], ['ni[ż]ej','zw','nisko','s'], ['wy[ż]ej','zw','wysoko','s'], ['mro[ż]onki','zw','mróz','z'], ['ka[ż]e','zw','kazać','z'],
+  ['[ż]aba','z0'], ['[ż]uk','z0'], ['[ż]yrafa','z0'], ['[ż]aglówka','z0'], ['ły[ż]ka','z0'], ['je[ż]','z0'], ['[ż]urek','z0'], ['pla[ż]a','z0'],
+  ['ró[ż]a','z0'], ['ba[ż]ant','z0'], ['[ż]elazko','z0'], ['[ż]yto','z0'], ['kału[ż]a','z0'], ['wie[ż]a','z0'], ['[ż]ółw','z0'], ['mę[ż]czyzna','z0'], ['je[ż]yna','z0'],
+]);
+
+function reasonRZ(b) {
+  const w = b.w;
+  if (b.r === 'r') return { t: `${w} → ${b.p}: rz wymienia się na r`, r: 'r' };
+  if (b.r === 'po') { const prev = w.slice(b.i - 2, b.i) === 'ch' ? 'ch' : w[b.i - 1]; return { t: `po „${prev}” piszemy rz`, r: 'po' }; }
+  if (b.r === 'ar') return { t: 'końcówka ' + (w.endsWith('arz') ? '-arz' : '-erz'), r: 'ar' };
+  if (b.r === 'rz0') return { t: 'rz niewymienne: to słowo trzeba zapamiętać', r: 'rz0' };
+  if (b.r === 'zw') return { t: `${w} → ${b.p}: ż wymienia się na ${b.s}`, r: 'zw' };
+  return { t: 'ż niewymienne: to słowo trzeba zapamiętać', r: 'z0' };
+}
+
+// ---------- litery i głoski ----------
+// głoski separated by dots; letters = the word without dots
+const DIGRAPHS = ['ch', 'cz', 'dz', 'dź', 'dż', 'rz', 'sz'];
+const SOFT = { ci: 'ć', si: 'ś', zi: 'ź', ni: 'ń', dzi: 'dź' };
+const LG = [
+  'k.o.t', 'd.o.m', 'r.y.b.a', 'ż.a.b.a', 'r.ę.k.a', 'g.ę.ś', 'k.o.ń', 'ł.ó.d.ź', 'm.i.ś', 'l.a.m.p.a', 'p.i.ł.k.a', 'ś.l.i.m.a.k',
+  'sz.a.f.a', 'cz.a.p.k.a', 'ch.l.e.b', 'rz.e.k.a', 'sz.k.o.ł.a', 'ch.o.i.n.k.a', 'dz.w.o.n', 'dż.e.m', 'dź.w.i.g', 'm.u.ch.a', 'k.o.sz',
+  'p.t.a.sz.e.k', 'ch.m.u.r.a', 'sz.cz.o.t.k.a', 'sz.cz.u.r', 'k.rz.e.s.ł.o', 'g.rz.y.b', 'cz.e.k.o.l.a.d.a', 'm.o.rz.e', 'dz.b.a.n',
+  'ci.o.ci.a', 'si.a.n.o', 'ni.e.b.o', 'dzi.e.c.k.o', 'zi.e.l.o.n.y', 'ci.e.ń', 'dzi.u.p.l.a', 'si.e.ć', 'ni.a.ń.k.a',
+].map(s => { const g = s.split('.'); return { w: g.join(''), g, nl: [...g.join('')].length, ng: g.length }; });
+
+// ---------- sylaby ----------
+const VOWELS = 'aąeęioóuy';
+const SY = [
+  'kot', 'dom', 'las', 'ul', 'miś', 'sok', 'lis', 'koń', 'pies',
+  'ma-ma', 'ta-ta', 'ko-ło', 'ro-wer', 'ba-lon', 'ry-ba', 'ża-ba', 'so-wa', 'mu-cha', 'rze-ka', 'li-zak', 'nie-bo', 'cio-cia', 'sia-no',
+  'ko-ty', 'no-ga', 'wo-da', 'ze-gar', 'sza-fa', 'ka-sza',
+  'sa-mo-lot', 'ba-lo-nik', 'po-mi-dor', 'ka-pe-lusz', 'pa-ra-sol', 'te-le-fon', 'kro-ko-dyl', 'zie-lo-ny', 'cho-in-ka', 'ba-na-ny',
+  'gi-ta-ra', 'ma-li-na', 'ja-go-da',
+  'cze-ko-la-da', 'te-le-wi-zor', 'hi-po-po-tam', 'ko-ra-li-ki', 'ba-ra-ba-ny', 'na-ma-lo-wa-ny',
+].map(s => { const p = s.split('-'); return { w: p.join(''), p, n: p.length }; });
+
+// ---------- alfabet ----------
+const ALPHABET = [...'aąbcćdeęfghijklłmnńoóprsśtuwyzźż'];
+const PL_LETTERS = 'ąćęłńóśźż';
+const AB_WORDS = ['arbuz', 'autobus', 'balon', 'bocian', 'brat', 'buty', 'biedronka', 'cebula', 'cytryna', 'cukierek', 'ćma', 'dom', 'deszcz',
+  'drzewo', 'dynia', 'dąb', 'foka', 'góra', 'gruszka', 'gęś', 'herbata', 'igła', 'jabłko', 'kot', 'kura', 'krowa', 'kino', 'klucz', 'kaczka',
+  'lis', 'lody', 'lampa', 'lustro', 'łódka', 'mama', 'miś', 'motyl', 'mucha', 'mleko', 'nos', 'ogórek', 'oko', 'osa', 'pająk', 'pomidor',
+  'ptak', 'pudełko', 'pies', 'rower', 'ryba', 'ręka', 'rak', 'róża', 'sowa', 'sałata', 'ser', 'słoń', 'śnieg', 'tata', 'telefon', 'tygrys',
+  'truskawka', 'tort', 'ul', 'wilk', 'woda', 'wazon', 'wróbel', 'zebra', 'zamek', 'zupa', 'źrebak', 'żaba'];
+const abIndex = c => ALPHABET.indexOf(c);
+function abCompare(a, b) {
+  for (let i = 0; i < Math.min(a.length, b.length); i++) {
+    const d = abIndex(a[i]) - abIndex(b[i]);
+    if (d) return d;
+  }
+  return a.length - b.length;
+}
+
+// ---------- cheat sheets: [id, letter, rule, example] ----------
+const CHEAT = {
+  ou: [
+    ['wym', 'ó', 'wymienia się na o, e, a', 'wóz → wozy'],
+    ['ow', 'ó', 'końcówki -ów, -ówka', 'kotów, kreskówka'],
+    ['zo', 'ó', 'niewymienne: zapamiętaj', 'góra, król, ósmy'],
+    ['u0', 'u', 'na początku słowa', 'ucho, ul'],
+    ['uend', 'u', 'na końcu słowa', 'tu, w ogródku'],
+    ['uk', 'u', '-uje, -unek, -uszek, -utki, -uch', 'maluje, rysunek'],
+    ['uz', 'u', 'niewymienne: zapamiętaj', 'mucha, kura'],
+  ],
+  rz: [
+    ['r', 'rz', 'wymienia się na r', 'morze → morski'],
+    ['po', 'rz', 'po b, ch, d, g, j, k, p, t, w', 'brzoza, drzewo, trzy'],
+    ['ar', 'rz', 'końcówki -arz, -erz', 'lekarz, talerz'],
+    ['rz0', 'rz', 'niewymienne: zapamiętaj', 'rzeka, burza'],
+    ['zw', 'ż', 'wymienia się na g, dz, h, z, s', 'książka → księga'],
+    ['z0', 'ż', 'niewymienne: zapamiętaj', 'żaba, jeż'],
+  ],
+  lg: [
+    ['lit', '', 'Literę piszemy i widzimy. Głoskę mówimy i słyszymy.', ''],
+    ['dwu', '', 'Dwuznaki ch, cz, dz, dź, dż, rz, sz: 2 litery, 1 głoska', 'szafa: 5 liter, 4 głoski'],
+    ['zmi', '', 'ci, si, zi, ni, dzi przed samogłoską: i nie jest osobną głoską', 'ciocia: 6 liter, 4 głoski'],
+  ],
+  sy: [
+    ['sam', '', 'W każdej sylabie jest jedna samogłoska: a, ą, e, ę, i, o, ó, u, y', ''],
+    ['ile', '', 'Ile samogłosek, tyle sylab', 'sa-mo-lot: 3'],
+    ['i', '', 'i przed samogłoską nie tworzy osobnej sylaby', 'nie-bo, cio-cia'],
+    ['dwu', '', 'Dwuznaków (ch, cz, sz, rz…) nie rozdzielamy', 'mu-cha, sza-fa'],
+  ],
+  ab: [
+    ['abc', '', 'a ą b c ć d e ę f g h i j k l ł m n ń o ó p r s ś t u w y z ź ż', '(32 litery)'],
+    ['pl', '', 'Litera z ogonkiem albo kreską stoi zaraz po swojej parze', 'a ą, c ć, e ę, l ł, n ń, o ó, s ś, z ź ż'],
+    ['first', '', 'Wyrazy układamy według pierwszej litery', 'arbuz, balon, cebula'],
+    ['second', '', 'Gdy pierwsze litery są takie same, patrzymy na drugą', 'kino, kot, kura'],
+  ],
+};
 
 const DYKTANDA = [
   { id: 'wies', t: 'Na wsi', s: ['Krówka i kózka chodzą po ogródku.', 'Kura gdacze, a kogut pieje.', 'Przed stodołą stoi duży wóz.', 'Pszczółki zbierają miód z kwiatów.', 'Mały żuk siedzi pod ogórkiem.'] },
@@ -429,20 +534,39 @@ const DYKTANDA = [
   { id: 'bajka', t: 'Bajka', s: ['Dawno temu w dużym zamku mieszkał król.', 'Król miał piękną córkę.', 'Królewna lubiła róże i tulipany.', 'Pewnego dnia do zamku przyfrunęła wróżka.', 'Wróżka podarowała jej złotą łódkę.'] },
 ];
 
-// ---------- shared: storage, confetti, speech ----------
+function parseBank(rows) {
+  return rows.map(([g, r, p, s]) => {
+    const i = g.indexOf('['), j = g.indexOf(']');
+    return { w: g.slice(0, i) + g.slice(i + 1, j) + g.slice(j + 1), i, l: g.slice(i + 1, j), r, p, s };
+  });
+}
+
+// =====================================================================
+// SHARED: storage, helpers, confetti, speech
+// =====================================================================
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.floor(Math.random() * a.length)];
 const LS = 'polski.v1';
 let store;
 try { store = JSON.parse(localStorage.getItem(LS)); } catch (e) {}
-store = {
-  ou: { group: 'all', size: '10', speak: 'on', ...(store && store.ou) },
-  words: (store && store.words) || {},
-  dk: (store && store.dk) || {},
-};
+store = store || {};
+store.words = store.words || {};
+store.dk = store.dk || {};
+store.set = store.set || {};
+store.ui = { cheat: true, ...store.ui };
+if (store.ou) { store.set.ou = { ...store.ou, group: store.ou.group === 'o' ? 'ó' : store.ou.group }; delete store.ou; }
 const save = () => { try { localStorage.setItem(LS, JSON.stringify(store)); } catch (e) {} };
-// level: 0 = never seen, 1..4 = box (1 = needs work, 4 = mastered)
-const level = w => { const r = store.words[w.w]; return r ? r.box + 1 : 0; };
+// progress level: 0 = never seen, 1..4 = box (1 = needs work, 4 = mastered)
+const level = key => { const r = store.words[key]; return r ? r.box + 1 : 0; };
+function record(key, ok) {
+  const r = store.words[key] || { box: 0, ok: 0, bad: 0 };
+  if (ok) { r.ok++; r.box = store.words[key] ? Math.min(3, r.box + 1) : 1; }
+  else { r.bad++; r.box = 0; }
+  store.words[key] = r;
+  save();
+}
 
 let interacted = false;
 addEventListener('pointerdown', () => interacted = true, { once: true, capture: true });
@@ -480,17 +604,18 @@ const confetti = (() => {
 const speech = (() => {
   const ok = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
   let voice = null, known = false;
-  function pick() {
+  function choose() {
     const all = speechSynthesis.getVoices();
     if (all.length) known = true;
     const vs = all.filter(v => /^pl([-_]|$)/i.test(v.lang));
     voice = vs.find(v => v.localService) || vs[0] || null;
     document.dispatchEvent(new Event('voices'));
   }
-  if (ok) { pick(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', pick); }
+  if (ok) { choose(); speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', choose); }
   return {
     // false only when we know for sure there is no Polish voice
     get available() { return ok && (!known || !!voice); },
+    stop() { if (ok) try { speechSynthesis.cancel(); } catch (e) {} },
     say(text, rate = .9) {
       if (!ok) return;
       try {
@@ -510,109 +635,134 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
 }
 
 const PRAISE = ['Brawo!', 'Super!', 'Świetnie!', 'Ekstra!', 'Tak jest!', 'Doskonale!', 'Pięknie!'];
-const praise = () => PRAISE[Math.floor(Math.random() * PRAISE.length)];
+const praise = () => pick(PRAISE);
 const plural = (n, one, few, many) => n === 1 ? one : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? few : many;
 function btn(label, cls, fn) {
   const b = document.createElement('button');
   b.type = 'button'; b.className = 'btn ' + cls; b.textContent = label; b.onclick = fn; return b;
 }
-const isO = b => O_RULES.includes(b.r);
 // put letter c into the slot, keeping the case of the expected letter
 const withCase = (c, ref) => ref === ref.toUpperCase() ? c.toUpperCase() : c;
 
-// ================= Ó czy U =================
-const OU = (() => {
-  const S = store.ou;
-  let R = null, phase = 'question', timer = null;
+// ---------- mini cheat sheet ----------
+function cheatBox(set) {
+  return `<details class="cheat" data-cheat ${store.ui.cheat ? 'open' : ''}><summary>Ściąga</summary><ul>${CHEAT[set].map(([id, L, t, ex]) =>
+    `<li data-r="${id}">${L ? `<b>${esc(L)}</b> ` : ''}${esc(t)}${ex ? ` <i>· ${esc(ex)}</i>` : ''}</li>`).join('')}</ul></details>`;
+}
+function hitRules(root, ids) {
+  root.querySelectorAll('[data-cheat] li').forEach(li => li.classList.toggle('hit', ids.includes(li.dataset.r)));
+}
+document.addEventListener('toggle', e => {
+  if (!e.target.matches || !e.target.matches('[data-cheat]')) return;
+  if (store.ui.cheat === e.target.open) return;
+  store.ui.cheat = e.target.open; save();
+  document.querySelectorAll('[data-cheat]').forEach(d => { if (d.open !== store.ui.cheat) d.open = store.ui.cheat; });
+}, true);
 
-  const eligible = () => BANK.filter(b => S.group === 'all' || (S.group === 'o') === isO(b));
-  const weight = w => [3, 6, 4, 2, 1][level(w)];
-  function sample(list, size) {
-    const pool = list.map(w => ({ w, wt: weight(w) }));
+// =====================================================================
+// QUIZ ENGINE: one question at a time, answer, read why, tap "Dalej"
+// =====================================================================
+const QUIZ = {};
+function Quiz(cfg) {
+  const sec = $('tab-' + cfg.id);
+  const S = store.set[cfg.id] = { ...cfg.defaults, ...(store.set[cfg.id] || {}) };
+  const settings = [...cfg.settings, { k: 'size', label: 'Ile pytań w rundzie?', opts: [['10', '10'], ['20', '20']] }];
+  if (cfg.speak) settings.push({ k: 'speak', label: 'Czytaj na głos', opts: [['on', 'Tak'], ['off', 'Nie']] });
+  if (!S.size) S.size = '10';
+  if (cfg.speak && !S.speak) S.speak = 'on';
+  sec.innerHTML = `<div class="layout">
+    <aside class="panel settings" aria-label="Ustawienia"><h2>Ustawienia</h2>
+      ${settings.map(s => `<div class="field" data-field="${s.k}"><span class="label">${s.label}</span><div class="seg" data-k="${s.k}">${s.opts.map(([v, l]) => `<button type="button" data-v="${v}">${l}</button>`).join('')}</div></div>`).join('')}
+      <p class="hint" data-count></p>
+      <div class="field"><button class="btn primary small" type="button" data-new>Nowa runda ↻</button></div>
+    </aside>
+    <div class="stage">
+      <div class="stats">
+        <div class="stat ok"><b data-s="ok">0</b><span>Dobrze</span></div>
+        <div class="stat bad"><b data-s="bad">0</b><span>Błędy</span></div>
+        <div class="stat"><b data-s="streak">0</b><span>Seria</span></div>
+        <div class="stat"><b data-s="left">0</b><span>Zostało</span></div>
+      </div>
+      <div class="stage" data-play>
+        <div class="card" data-card aria-live="polite"><span class="badge" data-badge></span><div class="q" data-q></div><p class="fb" data-fb></p><p class="why" data-why></p></div>
+        <div data-a></div>
+        <div class="actions"><button class="btn primary hidden" type="button" data-next>Dalej →</button></div>
+        <p class="kbd-hint">${cfg.kbd || ''}${cfg.kbd ? ' · ' : ''}<kbd>Enter</kbd> dalej</p>
+        ${cheatBox(cfg.cheat)}
+      </div>
+      <div class="panel summary hidden" data-summary></div>
+    </div>
+  </div>`;
+  const q = s => sec.querySelector(s);
+  const el = { card: q('[data-card]'), q: q('[data-q]'), a: q('[data-a]'), fb: q('[data-fb]'), why: q('[data-why]'), badge: q('[data-badge]'), next: q('[data-next]'), play: q('[data-play]'), sum: q('[data-summary]') };
+  let R = null, phase = 'question', H = {};
+
+  const weight = it => { const k = cfg.keyOf(it); return k ? [3, 6, 4, 2, 1][level(k)] : 3; };
+  function sample(list, n) {
+    const pool = list.map(it => ({ it, wt: weight(it) }));
     const out = [];
-    while (out.length < Math.min(+size, pool.length)) {
+    while (out.length < Math.min(n, pool.length)) {
       let r = Math.random() * pool.reduce((a, p) => a + p.wt, 0), i = 0;
       for (; i < pool.length - 1; i++) { r -= pool[i].wt; if (r <= 0) break; }
-      out.push(pool.splice(i, 1)[0].w);
+      out.push(pool.splice(i, 1)[0].it);
     }
     return out;
   }
-  function record(w, ok) {
-    const r = store.words[w.w] || { box: 0, ok: 0, bad: 0 };
-    if (ok) { r.ok++; r.box = store.words[w.w] ? Math.min(3, r.box + 1) : 1; }
-    else { r.bad++; r.box = 0; }
-    store.words[w.w] = r;
-    save();
-  }
 
-  function newRound(words) {
-    clearTimeout(timer);
-    const list = words || sample(eligible(), S.size);
-    R = { queue: list.map(w => ({ w, retry: false })), ok: 0, bad: 0, streak: 0, best: 0, miss: new Map() };
-    $('ou-summary').classList.add('hidden');
-    $('ou-play').classList.remove('hidden');
+  function newRound(items) {
+    const list = items || sample(cfg.pool(S), +S.size);
+    R = { queue: list.map(it => ({ it, retry: false })), ok: 0, bad: 0, streak: 0, best: 0, miss: [] };
+    el.sum.classList.add('hidden');
+    el.play.classList.remove('hidden');
     show();
   }
   const cur = () => R && R.queue[0];
 
-  function wordHTML(w, slot) {
-    return esc(w.w.slice(0, w.i)) + slot + esc(w.w.slice(w.i + 1));
-  }
-
   function show() {
     const c = cur(); if (!c) return;
     phase = 'question';
-    const card = $('ou-card');
-    card.classList.remove('ok', 'bad');
-    $('ou-badge').textContent = c.retry ? 'Jeszcze raz' : '';
-    $('ou-word').innerHTML = wordHTML(c.w, '<span class="gap empty"></span>');
-    $('ou-fb').textContent = '';
-    $('ou-why').textContent = '';
-    $('ou-next').classList.add('hidden');
-    $('ou-keys').querySelectorAll('button').forEach(b => b.disabled = false);
-    if (S.speak === 'on' && interacted) setTimeout(() => phase === 'question' && cur() === c && speech.say(c.w.w), 200);
+    el.card.classList.remove('ok', 'bad');
+    el.badge.textContent = c.retry ? 'Jeszcze raz' : '';
+    el.fb.textContent = ''; el.why.textContent = '';
+    el.next.classList.add('hidden');
+    el.a.classList.remove('locked');
+    hitRules(sec, []);
+    H = cfg.mount(c.it, { q: el.q, a: el.a, S, done }) || {};
+    if (cfg.speak && S.speak === 'on' && interacted) setTimeout(() => phase === 'question' && cur() === c && speech.say(cfg.say(c.it)), 200);
     stats();
   }
-
   function stats() {
-    $('ou-s-ok').textContent = R.ok; $('ou-s-bad').textContent = R.bad;
-    $('ou-s-streak').textContent = R.streak; $('ou-s-left').textContent = R.queue.length;
+    for (const k of ['ok', 'bad', 'streak']) q(`[data-s="${k}"]`).textContent = R[k];
+    q('[data-s="left"]').textContent = R.queue.length;
   }
 
-  function answer(l) {
+  // res: {ok, fb (html, optional), why (text), rules: [cheat ids], say (optional text to read)}
+  function done(res) {
     if (phase !== 'question') return;
-    const c = cur(), w = c.w, ok = l === w.l;
-    if (!c.retry) { record(w, ok); ok ? R.ok++ : R.bad++; }
-    const card = $('ou-card');
-    if (ok) {
-      R.streak++; R.best = Math.max(R.best, R.streak);
-      if (R.streak % 5 === 0) confetti(50);
-      $('ou-word').innerHTML = wordHTML(w, `<span class="gap good">${esc(w.l)}</span>`);
-      $('ou-fb').innerHTML = `<b>${praise()}</b>`;
-    } else {
-      R.streak = 0; R.miss.set(w.w, w);
-      $('ou-word').innerHTML = wordHTML(w, `<span class="gap wrong"><s>${esc(l)}</s><b class="fix">${esc(w.l)}</b></span>`);
-      $('ou-fb').innerHTML = `<b>Piszemy „${esc(w.w)}”</b>`;
-      card.classList.add('shake'); setTimeout(() => card.classList.remove('shake'), 450);
-    }
-    $('ou-why').textContent = reason(w.w, w.i);
-    card.classList.add(ok ? 'ok' : 'bad');
-    phase = ok ? 'ok' : 'bad';
-    $('ou-keys').querySelectorAll('button').forEach(b => b.disabled = true);
-    $('ou-next').classList.remove('hidden');
+    const c = cur(), key = cfg.keyOf(c.it);
+    if (!c.retry) { if (key) record(key, res.ok); res.ok ? R.ok++ : R.bad++; }
+    if (res.ok) { R.streak++; R.best = Math.max(R.best, R.streak); if (R.streak % 5 === 0) confetti(50); }
+    else { R.streak = 0; if (!R.miss.includes(c.it)) R.miss.push(c.it); el.card.classList.add('shake'); setTimeout(() => el.card.classList.remove('shake'), 450); }
+    phase = res.ok ? 'ok' : 'bad';
+    el.card.classList.add(phase);
+    el.fb.innerHTML = res.fb || `<b>${res.ok ? praise() : 'Jeszcze nie tym razem'}</b>`;
+    el.why.textContent = res.why || '';
+    el.a.classList.add('locked');
+    hitRules(sec, res.rules || []);
+    el.next.classList.remove('hidden');
+    el.next.focus({ preventScroll: true });
+    if (res.say && cfg.speak && S.speak === 'on') speech.say(res.say, .8);
     stats();
     renderSciaga();
-    if (ok) timer = setTimeout(next, 1600);
   }
 
   function next() {
     if (phase !== 'ok' && phase !== 'bad') return;
-    clearTimeout(timer);
     const c = R.queue.shift();
-    if (phase === 'bad') R.queue.splice(Math.min(3, R.queue.length), 0, { w: c.w, retry: true });
+    if (phase === 'bad') R.queue.splice(Math.min(3, R.queue.length), 0, { it: c.it, retry: true });
     if (!R.queue.length) return summary();
     show();
-    const card = $('ou-card'); card.classList.add('pop'); setTimeout(() => card.classList.remove('pop'), 350);
+    el.card.classList.add('pop'); setTimeout(() => el.card.classList.remove('pop'), 350);
   }
 
   function summary() {
@@ -620,56 +770,279 @@ const OU = (() => {
     const first = R.ok + R.bad, pct = first ? Math.round(100 * R.ok / first) : 0;
     const stars = pct >= 90 ? 3 : pct >= 70 ? 2 : pct >= 40 ? 1 : 0;
     const title = pct === 100 ? 'Bezbłędnie!' : pct >= 90 ? 'Brawo! Świetna robota!' : pct >= 70 ? 'Bardzo dobrze!' : pct >= 40 ? 'Nieźle, ćwiczymy dalej!' : 'Spróbuj jeszcze raz, będzie lepiej!';
-    const miss = [...R.miss.values()];
-    const el = $('ou-summary');
-    el.innerHTML = `<h2>${title}</h2>
+    const labels = [...new Set(R.miss.map(cfg.label).filter(Boolean))];
+    el.sum.innerHTML = `<h2>${title}</h2>
       <div class="stars">${[0, 1, 2].map(i => `<span class="${i < stars ? '' : 'off'}">★</span>`).join('')}</div>
       <div class="big-score">${R.ok} z ${first} od razu dobrze · najdłuższa seria: ${R.best}</div>
-      ${miss.length ? `<p class="hint">Te słowa warto powtórzyć:</p><div class="chips">${miss.map(w => `<button class="chip miss" type="button" data-say="${esc(w.w)}">${esc(w.w)}</button>`).join('')}</div>` : ''}
+      ${labels.length ? `<p class="hint">Warto powtórzyć:</p><div class="chips">${labels.map(l => `<button class="chip miss" type="button" data-say="${esc(l)}">${esc(l)}</button>`).join('')}</div>` : ''}
       <div class="actions"></div>`;
-    const a = el.querySelector('.actions');
-    if (miss.length) a.append(btn('Powtórz trudne', 'red', () => newRound(miss)));
+    const a = el.sum.querySelector('.actions');
+    if (R.miss.length) a.append(btn('Powtórz trudne', 'red', () => newRound(R.miss.slice())));
     a.append(btn('Nowa runda ↻', 'primary', () => newRound()));
-    $('ou-play').classList.add('hidden');
-    el.classList.remove('hidden');
+    el.play.classList.add('hidden');
+    el.sum.classList.remove('hidden');
     if (stars >= 2) confetti(stars === 3 ? 160 : 80);
   }
 
-  $('ou-keys').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) answer(b.dataset.l); });
-  $('ou-next').onclick = next;
-  $('ou-new').onclick = () => newRound();
-
-  const segs = { 'ou-set-group': 'group', 'ou-set-size': 'size', 'ou-set-speak': 'speak' };
+  el.next.onclick = next;
+  q('[data-new]').onclick = () => newRound();
   function renderSettings() {
-    for (const [id, k] of Object.entries(segs))
-      $(id).querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === S[k])));
-    const n = eligible().length;
-    $('ou-count').textContent = `${n} ${plural(n, 'słowo', 'słowa', 'słów')}`;
+    sec.querySelectorAll('.seg').forEach(seg => seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.v === S[seg.dataset.k]))));
+    if (cfg.visible) sec.querySelectorAll('[data-field]').forEach(f => f.hidden = !cfg.visible(f.dataset.field, S));
+    q('[data-count]').textContent = cfg.count ? cfg.count(S) : '';
   }
-  for (const [id, k] of Object.entries(segs))
-    $(id).querySelectorAll('button').forEach(b => b.onclick = () => {
-      S[k] = b.dataset.v; save(); renderSettings();
-      if (k !== 'speak') newRound();
-    });
+  sec.querySelectorAll('.seg').forEach(seg => seg.querySelectorAll('button').forEach(b => b.onclick = () => {
+    S[seg.dataset.k] = b.dataset.v; save(); renderSettings();
+    if (seg.dataset.k !== 'speak') newRound();
+  }));
 
   function key(e) {
     if (phase === 'summary') { if (e.key === 'Enter') newRound(); return; }
-    const k = e.key.toLowerCase();
-    if (phase === 'question') {
-      if (k === 'o' || k === 'ó' || k === 'arrowleft') { e.preventDefault(); answer('ó'); }
-      else if (k === 'u' || k === 'arrowright') { e.preventDefault(); answer('u'); }
-    } else if (k === 'enter' || k === ' ') { e.preventDefault(); next(); }
+    if (phase === 'question') { H.key && H.key(e); return; }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); next(); }
   }
 
   renderSettings();
   newRound();
-  return { key };
-})();
+  QUIZ[cfg.id] = { key };
+}
 
-// ================= Dyktando =================
+// =====================================================================
+// MODULES
+// =====================================================================
+
+// ---------- spelling: ó/u and rz/ż ----------
+function Spelling({ id, bank, pair, groups, cheat, reason, keyOf, keys, kbd }) {
+  const wordHTML = (b, slot) => esc(b.w.slice(0, b.i)) + slot + esc(b.w.slice(b.i + b.l.length));
+  Quiz({
+    id, cheat, kbd, speak: true,
+    defaults: { group: 'all' },
+    settings: [{ k: 'group', label: 'Słowa', opts: groups }],
+    count: S => { const n = bank.filter(b => S.group === 'all' || b.l === S.group).length; return `${n} ${plural(n, 'słowo', 'słowa', 'słów')}`; },
+    pool: S => bank.filter(b => S.group === 'all' || b.l === S.group),
+    keyOf, label: b => b.w, say: b => b.w,
+    mount(b, { q, a, done }) {
+      q.innerHTML = `<p class="qword">${wordHTML(b, '<span class="gap empty"></span>')}</p>`;
+      a.innerHTML = `<div class="keys">${pair.map((l, i) => `<button class="key k${i}" type="button" data-l="${l}" aria-label="${l}">${l}</button>`).join('')}</div>`;
+      const answer = l => {
+        const ok = l === b.l, r = reason(b);
+        q.innerHTML = `<p class="qword">${wordHTML(b, ok ? `<span class="gap good">${esc(b.l)}</span>` : `<span class="gap wrong"><s>${esc(l)}</s><b class="fix">${esc(b.l)}</b></span>`)}</p>`;
+        done({ ok, fb: ok ? `<b>${praise()}</b>` : `<b>Piszemy „${esc(b.w)}”</b>`, why: r.t, rules: [r.r] });
+      };
+      a.onclick = e => { const x = e.target.closest('[data-l]'); if (x) answer(x.dataset.l); };
+      return { key: e => { const l = keys[e.key.toLowerCase()]; if (l) { e.preventDefault(); answer(l); } } };
+    },
+  });
+}
+
+Spelling({
+  id: 'ou', bank: OU_BANK, pair: ['ó', 'u'], cheat: 'ou',
+  groups: [['all', 'Wszystkie'], ['ó', 'Z ó'], ['u', 'Z u']],
+  reason: b => reasonOU(b.w, b.i), keyOf: b => b.w,
+  keys: { o: 'ó', 'ó': 'ó', arrowleft: 'ó', u: 'u', arrowright: 'u' },
+  kbd: '<kbd>O</kbd> albo <kbd>←</kbd> to ó · <kbd>U</kbd> albo <kbd>→</kbd> to u',
+});
+Spelling({
+  id: 'rz', bank: RZ_BANK, pair: ['rz', 'ż'], cheat: 'rz',
+  groups: [['all', 'Wszystkie'], ['rz', 'Z rz'], ['ż', 'Z ż']],
+  reason: reasonRZ, keyOf: b => 'rz:' + b.w,
+  keys: { r: 'rz', arrowleft: 'rz', z: 'ż', 'ż': 'ż', arrowright: 'ż' },
+  kbd: '<kbd>R</kbd> albo <kbd>←</kbd> to rz · <kbd>Z</kbd> albo <kbd>→</kbd> to ż',
+});
+
+// ---------- number answer buttons (shared by litery and sylaby) ----------
+function numberOpts(a, values, cls = '') {
+  a.innerHTML = `<div class="opts ${cls}">${values.map(v => `<button class="opt" type="button" data-v="${v}">${v}</button>`).join('')}</div>`;
+}
+function markOpts(a, chosen, right) {
+  a.querySelectorAll('[data-v]').forEach(b => {
+    if (b.dataset.v === String(right)) b.classList.add('good');
+    else if (b.dataset.v === String(chosen)) b.classList.add('bad');
+  });
+}
+
+// ---------- litery i głoski ----------
+Quiz({
+  id: 'lg', cheat: 'lg', speak: true,
+  defaults: { ask: 'mix' },
+  settings: [{ k: 'ask', label: 'Co liczymy?', opts: [['l', 'Litery'], ['g', 'Głoski'], ['mix', 'Na zmianę']] }],
+  count: () => `${LG.length} wyrazów`,
+  pool: S => LG.flatMap(w => (S.ask === 'mix' ? ['l', 'g'] : [S.ask]).map(ask => ({ ...w, ask }))),
+  keyOf: it => `lg:${it.ask}:${it.w}`, label: it => it.w, say: it => it.w,
+  kbd: '<kbd>1</kbd>–<kbd>9</kbd> odpowiedź',
+  mount(it, { q, a, done }) {
+    const n = it.ask === 'l' ? it.nl : it.ng;
+    q.innerHTML = `<p class="qword">${esc(it.w)}</p><p class="ask">Ile ${it.ask === 'l' ? 'liter' : 'głosek'} ma ten wyraz?</p>
+      <button class="say" type="button" data-say="${esc(it.w)}"><svg aria-hidden="true"><use href="#spk"/></svg>Posłuchaj</button>`;
+    const start = Math.max(1, n - Math.floor(Math.random() * 4));
+    const vals = [0, 1, 2, 3].map(d => start + d);
+    numberOpts(a, vals);
+    const answer = v => {
+      const ok = v === n;
+      markOpts(a, v, n);
+      const dwu = it.g.some(s => DIGRAPHS.includes(s)), zmi = it.g.some(s => SOFT[s]);
+      q.innerHTML = `<p class="qword" style="font-size:clamp(2.4rem,11vw,3.6rem)">${esc(it.w)}</p><div class="split">
+        <div class="brow"><span class="tag">litery: ${it.nl}</span>${[...it.w].map(c => `<span class="lb">${esc(c)}</span>`).join('')}</div>
+        <div class="brow"><span class="tag">głoski: ${it.ng}</span>${it.g.map(s => `<span class="gb ${s.length > 1 ? 'two' : ''}">${esc(s)}${SOFT[s] ? `<small>${SOFT[s]}</small>` : ''}</span>`).join('')}</div></div>`;
+      const extra = [];
+      if (dwu) extra.push(`dwuznak ${it.g.filter(s => DIGRAPHS.includes(s)).join(', ')}: 2 litery, 1 głoska`);
+      if (zmi) extra.push(`${it.g.filter(s => SOFT[s]).join(', ')}: i tylko zmiękcza`);
+      if (!extra.length) extra.push('każda litera to jedna głoska');
+      done({ ok, fb: ok ? `<b>${praise()} ${n}</b>` : `<b>${it.ask === 'l' ? 'Liter' : 'Głosek'} jest ${n}</b>`,
+        why: `${it.w}: ${it.nl} ${plural(it.nl, 'litera', 'litery', 'liter')}, ${it.ng} ${plural(it.ng, 'głoska', 'głoski', 'głosek')}. ${extra.join('; ')}.`,
+        rules: ['lit', ...(dwu ? ['dwu'] : []), ...(zmi ? ['zmi'] : [])] });
+    };
+    a.onclick = e => { const x = e.target.closest('[data-v]'); if (x) answer(+x.dataset.v); };
+    return { key: e => { if (vals.includes(+e.key)) answer(+e.key); } };
+  },
+});
+
+// ---------- sylaby ----------
+const hasSoftI = w => /[^aąeęioóuy]i[aąeęoóuy]/.test(w);
+const hasDigraph = w => DIGRAPHS.some(d => w.includes(d));
+Quiz({
+  id: 'sy', cheat: 'sy', speak: true,
+  defaults: { mode: 'mix' },
+  settings: [{ k: 'mode', label: 'Ćwiczenie', opts: [['count', 'Ile sylab?'], ['split', 'Podziel'], ['mix', 'Na zmianę']] }],
+  count: () => `${SY.length} wyrazów`,
+  pool: S => SY.flatMap(w => (S.mode === 'mix' ? ['count', 'split'] : [S.mode]).filter(m => m === 'count' || w.n > 1).map(m => ({ ...w, m }))),
+  keyOf: it => `sy:${it.m}:${it.w}`, label: it => it.p.join('-'), say: it => it.w,
+  kbd: '<kbd>1</kbd>–<kbd>5</kbd> ile sylab',
+  mount(it, { q, a, done }) {
+    const rules = ['sam', 'ile', ...(hasSoftI(it.w) ? ['i'] : []), ...(hasDigraph(it.w) ? ['dwu'] : [])];
+    const sylHTML = (parts, cls = '') => `<div class="syl ${cls}">${parts.map(p => `<span>${esc(p)}</span>`).join('')}</div>`;
+    const sayParts = it.p.join(', ');
+    if (it.m === 'count') {
+      q.innerHTML = `<p class="qword">${esc(it.w)}</p><p class="ask">Ile sylab ma ten wyraz?</p>
+        <button class="say" type="button" data-say="${esc(it.w)}"><svg aria-hidden="true"><use href="#spk"/></svg>Posłuchaj</button>`;
+      numberOpts(a, [1, 2, 3, 4, 5], 'five');
+      const answer = v => {
+        const ok = v === it.n;
+        markOpts(a, v, it.n);
+        q.innerHTML = sylHTML(it.p);
+        done({ ok, fb: ok ? `<b>${praise()} ${it.n}</b>` : `<b>Sylab jest ${it.n}</b>`, why: `${it.p.join(' – ')}: ${it.n} ${plural(it.n, 'sylaba', 'sylaby', 'sylab')}`, rules, say: sayParts });
+      };
+      a.onclick = e => { const x = e.target.closest('[data-v]'); if (x) answer(+x.dataset.v); };
+      return { key: e => { if (+e.key >= 1 && +e.key <= 5) answer(+e.key); } };
+    }
+    // split: tap the letter that ends a syllable
+    const letters = [...it.w], cuts = new Set();
+    const want = []; let pos = 0;
+    it.p.slice(0, -1).forEach(p => { pos += [...p].length; want.push(pos - 1); });
+    const render = () => {
+      q.innerHTML = `<p class="ask">Podziel na sylaby: stuknij literę, na której kończy się sylaba</p>
+        <div class="letters">${letters.map((c, i) => `<button type="button" data-i="${i}" class="${cuts.has(i) ? 'cut' : ''}" ${i === letters.length - 1 ? 'disabled' : ''}>${esc(c)}</button>`).join('')}</div>
+        <button class="say" type="button" data-say="${esc(it.w)}"><svg aria-hidden="true"><use href="#spk"/></svg>Posłuchaj</button>`;
+    };
+    render();
+    a.innerHTML = `<div class="actions"><button class="btn" type="button" data-clear>Wyczyść</button><button class="btn primary" type="button" data-check>Sprawdź</button></div>`;
+    q.onclick = e => {
+      const x = e.target.closest('[data-i]'); if (!x || a.classList.contains('locked')) return;
+      const i = +x.dataset.i; cuts.has(i) ? cuts.delete(i) : cuts.add(i); render();
+    };
+    const check = () => {
+      const ok = cuts.size === want.length && want.every(i => cuts.has(i));
+      const mine = []; let cur = '';
+      letters.forEach((c, i) => { cur += c; if (cuts.has(i)) { mine.push(cur); cur = ''; } });
+      mine.push(cur);
+      q.onclick = null;
+      q.innerHTML = sylHTML(it.p) + (ok ? '' : `<p class="ask">Twoje: ${mine.map(esc).join(' – ')}</p>`);
+      done({ ok, fb: ok ? `<b>${praise()}</b>` : `<b>Dzielimy tak: ${it.p.join(' – ')}</b>`, why: `${it.n} ${plural(it.n, 'sylaba', 'sylaby', 'sylab')}, w każdej jedna samogłoska`, rules, say: sayParts });
+    };
+    a.querySelector('[data-check]').onclick = check;
+    a.querySelector('[data-clear]').onclick = () => { cuts.clear(); render(); };
+    return { key: e => { if (e.key === 'Enter') { e.preventDefault(); check(); } } };
+  },
+});
+
+// ---------- alfabet ----------
+function abSet(lvl) {
+  if (lvl === '1') {
+    const byFirst = new Map();
+    shuffle(AB_WORDS.slice()).forEach(w => { if (!byFirst.has(w[0])) byFirst.set(w[0], w); });
+    return shuffle([...byFirst.values()]).slice(0, 4);
+  }
+  // same first letter, different second letters
+  const groups = {};
+  AB_WORDS.forEach(w => (groups[w[0]] = groups[w[0]] || []).push(w));
+  const ok = Object.values(groups).map(g => { const seen = new Map(); shuffle(g.slice()).forEach(w => { if (!seen.has(w[1])) seen.set(w[1], w); }); return [...seen.values()]; }).filter(g => g.length >= 3);
+  return shuffle(pick(ok)).slice(0, 4);
+}
+Quiz({
+  id: 'ab', cheat: 'ab',
+  defaults: { mode: 'mix', lvl: '1' },
+  settings: [
+    { k: 'mode', label: 'Ćwiczenie', opts: [['next', 'Co jest po?'], ['prev', 'Co jest przed?'], ['order', 'Ułóż wyrazy'], ['mix', 'Wszystko']] },
+    { k: 'lvl', label: 'Wyrazy różnią się', opts: [['1', 'pierwszą literą'], ['2', 'drugą literą']] },
+  ],
+  visible: (k, S) => k !== 'lvl' || S.mode === 'order' || S.mode === 'mix',
+  count: () => 'polski alfabet ma 32 litery',
+  pool: S => {
+    const out = [];
+    if (S.mode === 'next' || S.mode === 'mix') ALPHABET.slice(0, -1).forEach(l => out.push({ t: 'next', l }));
+    if (S.mode === 'prev' || S.mode === 'mix') ALPHABET.slice(1).forEach(l => out.push({ t: 'prev', l }));
+    if (S.mode === 'order' || S.mode === 'mix') for (let i = 0; i < (S.mode === 'mix' ? 6 : 20); i++) out.push({ t: 'order', words: abSet(S.lvl), lvl: S.lvl });
+    return out;
+  },
+  keyOf: it => it.t === 'order' ? null : `ab:${it.t}:${it.l}`,
+  label: it => it.t === 'order' ? it.words.slice().sort(abCompare).join(', ') : `${it.t === 'next' ? 'po' : 'przed'} ${it.l}`,
+  kbd: '',
+  mount(it, { q, a, done }) {
+    if (it.t !== 'order') {
+      const k = abIndex(it.l), right = ALPHABET[it.t === 'next' ? k + 1 : k - 1];
+      const near = [k - 2, k - 1, k + 1, k + 2].filter(i => i >= 0 && i < ALPHABET.length).map(i => ALPHABET[i]);
+      const opts = new Set([right]);
+      shuffle(near.filter(l => l !== it.l && l !== right)).slice(0, 2).forEach(l => opts.add(l));
+      while (opts.size < 4) { const l = pick(ALPHABET); if (l !== it.l) opts.add(l); }
+      const vals = shuffle([...opts]);
+      q.innerHTML = `<p class="ask">Jaka litera jest w alfabecie ${it.t === 'next' ? 'po literze' : 'przed literą'}</p><p class="qword">${esc(it.l)}</p>`;
+      a.innerHTML = `<div class="opts">${vals.map(v => `<button class="opt" type="button" data-v="${v}">${v}</button>`).join('')}</div>`;
+      const answer = v => {
+        const ok = v === right;
+        markOpts(a, v, right);
+        const from = Math.max(0, k - 3), to = Math.min(ALPHABET.length, k + 4);
+        q.innerHTML = `<p class="ask">${it.t === 'next' ? 'Po' : 'Przed'} „${esc(it.l)}” jest „${esc(right)}”</p><div class="strip">${ALPHABET.slice(from, to).map(l =>
+          `<span class="${l === it.l ? 'me' : l === right ? 'ans' : ''} ${PL_LETTERS.includes(l) ? 'pl' : ''}">${l}</span>`).join('')}</div>`;
+        const pl = PL_LETTERS.includes(right) || PL_LETTERS.includes(it.l);
+        done({ ok, fb: ok ? `<b>${praise()}</b>` : `<b>To „${esc(right)}”</b>`, why: ALPHABET.slice(from, to).join(' '), rules: ['abc', ...(pl ? ['pl'] : [])] });
+      };
+      a.onclick = e => { const x = e.target.closest('[data-v]'); if (x) answer(x.dataset.v); };
+      return {};
+    }
+    // order words alphabetically
+    const words = it.words, right = words.slice().sort(abCompare), chosen = [];
+    const render = () => {
+      q.innerHTML = `<p class="ask">Ułóż wyrazy w kolejności alfabetycznej</p><ol class="order">${words.map((_, i) => `<li>${chosen[i] ? esc(chosen[i]) : ''}</li>`).join('')}</ol>`;
+      a.innerHTML = `<div class="pool">${words.map(w => `<button class="wbtn" type="button" data-w="${esc(w)}" ${chosen.includes(w) ? 'disabled' : ''}>${esc(w)}</button>`).join('')}</div>
+        <div class="actions" style="margin-top:12px"><button class="btn small" type="button" data-undo ${chosen.length ? '' : 'disabled'}>← Cofnij</button></div>`;
+    };
+    const finish = () => {
+      const ok = chosen.every((w, i) => w === right[i]);
+      q.innerHTML = `<p class="ask">Kolejność alfabetyczna</p><ol class="order">${right.map((w, i) => `<li class="${chosen[i] === w ? 'good' : 'bad'}">${chosen[i] === w ? esc(w) : `<s>${esc(chosen[i])}</s>&nbsp;<small>${esc(w)}</small>`}</li>`).join('')}</ol>`;
+      const undo = a.querySelector('[data-undo]'); if (undo) undo.hidden = true;
+      const pos = it.lvl === '2' ? 1 : 0;
+      done({ ok, fb: ok ? `<b>${praise()}</b>` : '<b>Popatrz na poprawną kolejność</b>',
+        why: right.map(w => w[pos]).join(' → ') + (pos ? ' (druga litera)' : ' (pierwsza litera)'),
+        rules: ['abc', pos ? 'second' : 'first', ...(right.some(w => PL_LETTERS.includes(w[pos])) ? ['pl'] : [])] });
+    };
+    render();
+    a.onclick = e => {
+      if (e.target.closest('[data-undo]')) { chosen.pop(); render(); return; }
+      const x = e.target.closest('[data-w]'); if (!x) return;
+      chosen.push(x.dataset.w); render();
+      if (chosen.length === words.length) finish();
+    };
+    return { key: e => { if (e.key === 'Backspace') { e.preventDefault(); chosen.pop(); render(); } } };
+  },
+});
+
+// =====================================================================
+// DYKTANDO (ó/u)
+// =====================================================================
 const DK = (() => {
-  let D = null; // { d, n, sentences: [{text, gaps:[{i, want, got}]}], active }
+  let D = null;
   const LETTER = /\p{L}/u;
+  $('dk-cheat').innerHTML = cheatBox('ou');
 
   function parse(text) {
     const gaps = [];
@@ -720,6 +1093,7 @@ const DK = (() => {
     $('dk-progress').textContent = `zdanie ${D.n + 1} z ${D.sentences.length}`;
     $('dk-corr').innerHTML = '';
     $('dk-keys').classList.remove('hidden');
+    hitRules($('dk-play'), []);
     const c = $('dk-check'); c.textContent = 'Sprawdź'; c.onclick = check;
     voiceUI();
     render();
@@ -735,9 +1109,8 @@ const DK = (() => {
     return `<span class="${cls}" data-k="${k}" role="button" tabindex="-1" aria-label="luka ${k + 1}">${g.got ? esc(g.got) : ''}</span>`;
   }
   function sentenceHTML(s) {
-    const chars = [...s.text];
     let out = '', k = 0;
-    chars.forEach((ch, i) => {
+    [...s.text].forEach((ch, i) => {
       if (s.gaps[k] && s.gaps[k].i === i) { out += gapHTML(s, s.gaps[k], k); k++; }
       else out += esc(ch);
     });
@@ -781,9 +1154,11 @@ const DK = (() => {
     render();
     const chars = [...s.text];
     const bad = s.gaps.filter(g => g.got !== g.want);
+    const why = bad.map(g => { const { word, at } = wordAt(chars, g.i); return { word, r: reasonOU(word, at) }; });
     $('dk-corr').innerHTML = bad.length
-      ? bad.map(g => { const { word, at } = wordAt(chars, g.i); return `<p><span class="w">${esc(word)}</span>: ${esc(reason(word, at))}</p>`; }).join('')
+      ? why.map(x => `<p><span class="w">${esc(x.word)}</span>: ${esc(x.r.t)}</p>`).join('')
       : `<p class="ok">${praise()} Wszystko dobrze.</p>`;
+    hitRules($('dk-play'), why.map(x => x.r.r));
     if (!bad.length) confetti(40);
     $('dk-keys').classList.add('hidden');
     const c = $('dk-check');
@@ -816,7 +1191,7 @@ const DK = (() => {
 
   function list() {
     D = null;
-    speech.say('');
+    speech.stop();
     $('dk-play').classList.add('hidden');
     $('dk-summary').classList.add('hidden');
     $('dk-choose').classList.remove('hidden');
@@ -841,23 +1216,53 @@ const DK = (() => {
   return { key };
 })();
 
-// ================= Ściąga =================
+// =====================================================================
+// ŚCIĄGA (full)
+// =====================================================================
+const SC_SPELLING = [
+  { title: 'Ó i U', bank: OU_BANK, keyOf: b => b.w, rules: [
+    { L: 'ó', t: 'ó wymienia się na o, e, a', d: 'Jeśli w innym słowie z tej samej rodziny jest w tym miejscu o, e albo a, piszemy ó.', keys: ['o', 'e', 'a'] },
+    { L: 'ó', t: 'Końcówki -ów i -ówka', d: 'kotów, domów, kwiatów · kreskówka, złotówka.', keys: ['ow'] },
+    { L: 'ó', t: 'ó niewymienne', d: 'Tego ó nie da się wymienić. Te słowa trzeba zapamiętać. Na początku słowa ó jest tylko w: ósmy, ósemka, ów.', keys: ['zo', 'x0'] },
+    { L: 'u', t: 'u na początku słowa', d: 'Na początku słowa piszemy u. Wyjątki: ósmy, ósemka, ów.', keys: ['u0'], u: true },
+    { L: 'u', t: 'u na końcu słowa', d: 'Ó nigdy nie stoi na końcu słowa.', ex: 'w ogródk<em>u</em> · w zamk<em>u</em> · w pokoj<em>u</em> · dużo śnieg<em>u</em> · t<em>u</em>', keys: [], u: true },
+    { L: 'u', t: 'Końcówki -uje, -unek, -uszek, -utki, -uch', d: 'maluje, rysunek, fartuszek, malutki, maluch.', keys: ['uk'], u: true },
+    { L: 'u', t: 'u niewymienne', d: 'Pozostałe u trzeba zapamiętać.', keys: ['uz'], u: true },
+  ] },
+  { title: 'Rz i Ż', bank: RZ_BANK, keyOf: b => 'rz:' + b.w, rules: [
+    { L: 'rz', t: 'rz wymienia się na r', d: 'Jeśli w innym słowie z tej samej rodziny jest w tym miejscu r, piszemy rz.', keys: ['r'] },
+    { L: 'rz', t: 'rz po spółgłoskach', d: 'Po b, ch, d, g, j, k, p, t, w piszemy rz.', keys: ['po'] },
+    { L: 'rz', t: 'Końcówki -arz, -erz', d: 'lekarz, malarz, talerz, rycerz.', keys: ['ar'] },
+    { L: 'rz', t: 'rz niewymienne', d: 'Te słowa trzeba zapamiętać.', keys: ['rz0'] },
+    { L: 'ż', t: 'ż wymienia się na g, dz, h, z, s', d: 'Jeśli w innym słowie z tej samej rodziny jest w tym miejscu g, dz, h, z albo s, piszemy ż.', keys: ['zw'], u: true },
+    { L: 'ż', t: 'ż niewymienne', d: 'Te słowa trzeba zapamiętać.', keys: ['z0'], u: true },
+  ] },
+];
 function renderSciaga() {
-  let mastered = 0;
-  $('sc-rules').innerHTML = RULES.map(r => {
-    const words = BANK.filter(b => r.keys.includes(b.r));
-    const chips = words.map(w => {
-      const lv = level(w); if (lv === 4) mastered++;
-      return `<button class="chip l${lv}" type="button" data-say="${esc(w.w)}">${esc(w.w.slice(0, w.i))}<em style="font-style:normal;color:var(${r.u ? '--ink' : '--red'})">${esc(w.l)}</em>${esc(w.w.slice(w.i + 1))}</button>`;
+  let html = '';
+  for (const set of SC_SPELLING) {
+    let mastered = 0;
+    const cards = set.rules.map(r => {
+      const chips = set.bank.filter(b => r.keys.includes(b.r)).map(b => {
+        const lv = level(set.keyOf(b)); if (lv === 4) mastered++;
+        return `<button class="chip l${lv}" type="button" data-say="${esc(b.w)}">${esc(b.w.slice(0, b.i))}<em style="color:var(${r.u ? '--ink' : '--red'})">${esc(b.l)}</em>${esc(b.w.slice(b.i + b.l.length))}</button>`;
+      }).join('');
+      return `<article class="rule ${r.u ? 'u' : ''}"><h3><span class="L">${r.L}</span>${esc(r.t)}</h3><p>${esc(r.d)}</p>
+        ${r.ex ? `<p class="ex">${r.ex}</p>` : ''}${chips ? `<div class="chips">${chips}</div>` : ''}</article>`;
     }).join('');
-    return `<article class="rule ${r.u ? 'u' : ''}"><h3><span class="L">${r.L}</span>${esc(r.t)}</h3><p>${esc(r.d)}</p>
-      ${r.ex ? `<p class="ex">${r.ex}</p>` : ''}${chips ? `<div class="chips">${chips}</div>` : ''}</article>`;
-  }).join('');
-  $('sc-overall').textContent = `Umiem ${mastered} z ${BANK.length}`;
+    html += `<section class="sc-section"><h2>${set.title}<span>umiem ${mastered} z ${set.bank.length}</span></h2><div class="rules">${cards}</div></section>`;
+  }
+  const textCards = (lines, extra = '') => lines.map(([, , t, ex]) => `<article class="rule"><p class="ex">${esc(t)}</p>${ex ? `<p>${esc(ex)}</p>` : ''}</article>`).join('') + extra;
+  html += `<section class="sc-section"><h2>Litery i głoski</h2><div class="rules">${textCards(CHEAT.lg)}</div></section>`;
+  html += `<section class="sc-section"><h2>Sylaby</h2><div class="rules">${textCards(CHEAT.sy)}</div></section>`;
+  html += `<section class="sc-section"><h2>Alfabet<span>32 litery</span></h2><div class="rules">
+    <article class="rule" style="grid-column:1/-1"><div class="abc">${ALPHABET.map(l => `<span class="${PL_LETTERS.includes(l) ? 'pl' : ''}">${l}</span>`).join('')}</div></article>
+    ${textCards(CHEAT.ab.slice(1))}</div></section>`;
+  $('sc-body').innerHTML = html;
 }
 function resetPrompt() {
   $('reset-box').innerHTML = '<span class="confirm">Na pewno wyzerować? <button class="btn red" type="button" id="reset-yes">Tak</button><button class="btn" type="button" id="reset-no">Nie</button></span>';
-  $('reset-yes').onclick = () => { store.words = {}; store.dk = {}; save(); renderSciaga(); restoreReset(); location.reload(); };
+  $('reset-yes').onclick = () => { store.words = {}; store.dk = {}; save(); location.reload(); };
   $('reset-no').onclick = restoreReset;
 }
 function restoreReset() { $('reset-box').innerHTML = '<button class="link" type="button" id="reset">Wyzeruj postęp</button>'; $('reset').onclick = resetPrompt; }
@@ -879,6 +1284,7 @@ let tab = 'ou';
   function showTab(name) {
     if (!$('tab-' + name)) name = 'ou';
     tab = name;
+    speech.stop();
     document.querySelectorAll('.tabpanel').forEach(p => p.hidden = p.id !== 'tab-' + name);
     items.forEach(i => i.setAttribute('aria-current', String(i.dataset.tab === name)));
     $('menu-title').textContent = items.find(i => i.dataset.tab === name).querySelector('b').textContent;
@@ -894,8 +1300,9 @@ let tab = 'ou';
 })();
 document.addEventListener('keydown', e => {
   if (e.ctrlKey || e.metaKey || e.altKey || !$('menu').hidden) return;
-  if (e.target.closest && e.target.closest('button') && (e.key === ' ' || e.key === 'Enter')) return;
-  if (tab === 'ou') OU.key(e);
+  const onBtn = e.target.closest && e.target.closest('button,summary');
+  if (onBtn && (e.key === ' ' || e.key === 'Enter')) return;
+  if (QUIZ[tab]) QUIZ[tab].key(e);
   else if (tab === 'dyktando') DK.key(e);
 });
 </script>
