@@ -1,14 +1,15 @@
 // Polski service worker: works offline, always tries the network first for the app itself.
-const CACHE = 'polski-1.2';
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
+const CACHE = 'polski-1.3';
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './skarbonka.js', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
 
+// Cache Storage is shared by every app on this origin: only drop our own old caches.
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
-    .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(keys => Promise.all(keys.filter(k => k.startsWith('polski-') && k !== CACHE).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 

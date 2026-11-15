@@ -11,6 +11,8 @@ Wiedza o języku:
 - **Litery i głoski**: ile liter, ile głosek; po odpowiedzi rozkład na litery i głoski (dwuznaki, zmiękczenia).
 - **Sylaby**: ile sylab i dzielenie wyrazu na sylaby.
 
+Za odpowiedzi są gwiazdki (wspólna `skarbonka.js`, kopia z [Naukagier](https://paduszynski.github.io/naukagry/)); pigułka w nagłówku i „Gry ★” w menu prowadzą do gier.
+
 Pod każdym ćwiczeniem jest krótka ściąga, a reguła pasująca do odpowiedzi podświetla się. Pełna **Ściąga** ma wszystkie reguły i słowa pokolorowane według postępu.
 
 Dane są na górze skryptu w `index.html`: `OU_BANK`, `RZ_BANK`, `CH_BANK` (luka w nawiasach, reguła, dowód), `DYKTANDA` (pole `set`: ou/rz/ch; każde ó/u, rz/ż albo ch/h w zdaniu staje się luką; odmienione słowa dopisz do `EXTRA_FORMS`, `RZ_FORMS` albo `CH_FORMS`, żeby poprawka podała właściwą regułę), `LG` (głoski rozdzielone kropkami), `SY` (sylaby rozdzielone myślnikami), `AB_WORDS`.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Polski – ćwiczenia dla dzieci</title>
-<meta name="version" content="1.2">
+<meta name="version" content="1.3">
 <meta name="description" content="Polski – ćwiczenia dla dzieci: ó czy u, rz czy ż, ch czy h, dyktanda z lektorem, alfabet, litery i głoski, sylaby.">
 <meta name="theme-color" content="#1f3d99">
 <link rel="manifest" href="manifest.webmanifest">
@@ -69,6 +69,17 @@ header .wrap{display:flex;align-items:center;gap:12px;min-height:60px;padding-bl
 .menu-item span{color:var(--muted);font-size:.95rem}
 .menu-item:hover{background:var(--ink-soft)}
 .menu-item[aria-current="true"] b{color:var(--red)}
+a.menu-item{text-decoration:none}
+
+/* star wallet pill (skarbonka.js) between the brand and the menu button */
+.wallet{margin-left:auto;display:flex;min-width:0}
+.wallet:empty{display:none}
+.wallet:not(:empty) + .menu-btn{margin-left:0}
+.wallet .skb{--skb-star:#f2b705;--skb-lvl:var(--red);--skb-bg:var(--paper);--skb-ink:var(--ink);
+  border-radius:9px 13px 8px 12px;font-size:1.05rem;gap:6px;padding:5px 9px 4px 7px;min-height:38px}
+.wallet .skb-bar{background:#f6d4d7;width:28px}
+@media (max-width:520px){.ver,.menu-title{display:none}}
+@media (max-width:400px){header .wrap{gap:8px}.brand{font-size:1.35rem;gap:6px}.logo{width:34px;height:34px;font-size:1.1rem}.wallet .skb{font-size:.95rem;gap:4px;padding-inline:6px}.wallet .skb-lvl{gap:3px}.wallet .skb-bar{width:20px}}
 
 main{padding:14px 0 28px}
 
@@ -265,6 +276,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
   .card{min-height:300px}
 }
 @media (max-width:359px){.menu-title{display:none}.brand{font-size:1.45rem}}
+@media (max-width:340px){.brand{font-size:0}.brand .logo{font-size:1.1rem}}
 @media (max-height:640px) and (max-width:700px){.stats{display:none}}
 @media (prefers-reduced-motion: reduce){*{animation:none !important;transition:none !important}}
 </style>
@@ -276,7 +288,8 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.2">1.2</span></div>
+    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.3">1.3</span></div>
+    <div class="wallet" id="wallet"></div>
     <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
       <span class="menu-title" id="menu-title"></span>
       <span class="burger" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -293,6 +306,8 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
       <button class="menu-item" type="button" data-tab="sy"><b>Sylaby</b><span>Policz i podziel na sylaby</span></button>
       <p class="menu-group">Pomoc</p>
       <button class="menu-item" type="button" data-tab="sciaga"><b>Ściąga</b><span>Wszystkie reguły i moje słowa</span></button>
+      <p class="menu-group">Nagrody</p>
+      <a class="menu-item" href="/naukagry/"><b>Gry ★</b><span>Wydaj gwiazdki na gry</span></a>
     </nav>
   </div>
 </header>
@@ -347,9 +362,10 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
   </section>
 </main>
 
-<footer>Polski 1.2 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
+<footer>Polski 1.3 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
 <canvas id="confetti"></canvas>
 
+<script src="skarbonka.js"></script>
 <script>
 // =====================================================================
 // DATA
@@ -621,6 +637,10 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pick = a => a[Math.floor(Math.random() * a.length)];
+// star wallet shared with Matma, Angielski and Naukagry (skarbonka.js); the app works without it.
+// Named SKB, not S: S is already the local name for quiz settings and the current dictation sentence.
+const SKB = window.Skarbonka ? Skarbonka.session('polski') : null;
+if (SKB) Skarbonka.mountBadge($('wallet'), { session: SKB });
 const LS = 'polski.v1';
 let store;
 try { store = JSON.parse(localStorage.getItem(LS)); } catch (e) {}
@@ -784,7 +804,9 @@ function Quiz(cfg) {
 
   function newRound(items) {
     const list = items || sample(cfg.pool(S), +S.size);
-    R = { queue: list.map(it => ({ it, retry: false })), ok: 0, bad: 0, streak: 0, best: 0, miss: [] };
+    // review = "Powtórz trudne" (every item was wrong before); noBonus = left for another module mid-round
+    R = { queue: list.map(it => ({ it, retry: false })), ok: 0, bad: 0, streak: 0, best: 0, miss: [], review: !!items, answered: 0, noBonus: false };
+    if (SKB) SKB.newSet(); // an unfinished round is abandoned without the set bonus
     el.sum.classList.add('hidden');
     el.play.classList.remove('hidden');
     show();
@@ -814,6 +836,9 @@ function Quiz(cfg) {
     if (phase !== 'question') return;
     const c = cur(), key = cfg.keyOf(c.it);
     if (!c.retry) { if (key) record(key, res.ok); res.ok ? R.ok++ : R.bad++; }
+    // stars: once per shown question (the phase guard above stops double taps and repeated keys)
+    R.answered++;
+    if (SKB) { if (!res.ok) SKB.wrong(); else if (c.retry || R.review) SKB.retry(); else SKB.correct(); }
     if (res.ok) { R.streak++; R.best = Math.max(R.best, R.streak); if (R.streak % 5 === 0) confetti(50); }
     else { R.streak = 0; if (!R.miss.includes(c.it)) R.miss.push(c.it); el.card.classList.add('shake'); setTimeout(() => el.card.classList.remove('shake'), 450); }
     phase = res.ok ? 'ok' : 'bad';
@@ -840,6 +865,8 @@ function Quiz(cfg) {
 
   function summary() {
     phase = 'summary'; stats();
+    // "Powtórz trudne" continues a set that already got its bonus; a round left for another module gets none
+    if (SKB) R.review || R.noBonus ? SKB.newSet() : SKB.setDone();
     const first = R.ok + R.bad, pct = first ? Math.round(100 * R.ok / first) : 0;
     const stars = pct >= 90 ? 3 : pct >= 70 ? 2 : pct >= 40 ? 1 : 0;
     const title = pct === 100 ? 'Bezbłędnie!' : pct >= 90 ? 'Brawo! Świetna robota!' : pct >= 70 ? 'Bardzo dobrze!' : pct >= 40 ? 'Nieźle, ćwiczymy dalej!' : 'Spróbuj jeszcze raz, będzie lepiej!';
@@ -877,7 +904,9 @@ function Quiz(cfg) {
 
   renderSettings();
   newRound();
-  QUIZ[cfg.id] = { key };
+  // called when the child switches to another module mid-round: finishing this round later gives no set bonus
+  const leave = () => { if (R && phase !== 'summary' && R.answered) R.noBonus = true; };
+  QUIZ[cfg.id] = { key, leave };
 }
 
 // =====================================================================
@@ -1121,6 +1150,7 @@ Quiz({
 // =====================================================================
 const DK = (() => {
   let D = null;
+  const MISSED = {}; // dictation id -> Set of "sentence:gap" answered wrong in an earlier attempt (this page load)
   const LETTER = /\p{L}/u;
   function parse(text, set) {
     const chars = [...text], gaps = [];
@@ -1159,7 +1189,9 @@ const DK = (() => {
 
   function start(n) {
     const d = DYKTANDA[n], set = d.set || 'ou', cfg = DK_SETS[set];
-    D = { d, set, n: 0, sentences: d.s.map(t => parse(t, set)), active: 0 };
+    D = { d, set, n: 0, sentences: d.s.map(t => parse(t, set)), active: 0, done: false, noBonus: false };
+    if (!MISSED[d.id]) MISSED[d.id] = new Set();
+    if (SKB) SKB.newSet(); // the whole dictation is one set
     $('dk-keys').innerHTML = cfg.pair.map((l, i) => `<button class="key k${i}" type="button" data-l="${l}" aria-label="${l}">${l}</button>`).join('');
     $('dk-kbd').innerHTML = cfg.kbd;
     $('dk-cheat').innerHTML = cheatBox(set);
@@ -1244,10 +1276,27 @@ const DK = (() => {
   }
   $('dk-keys').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) put(b.dataset.l); });
 
+  // stars: every gap is one item, scored once when its sentence is checked
+  function score(s) {
+    if (!SKB) return;
+    const miss = MISSED[D.d.id], flies = document.querySelectorAll('.skb-fly').length;
+    let total = 0;
+    s.gaps.forEach((g, k) => {
+      const id = D.n + ':' + k;
+      if (g.got !== g.want) { SKB.wrong(); miss.add(id); }
+      else if (miss.has(id)) { total += SKB.retry(); miss.delete(id); } // wrong in an earlier attempt
+      else total += SKB.correct();
+    });
+    // one fly-up per sentence instead of a pile of overlapping "+10"
+    const fresh = [...document.querySelectorAll('.skb-fly')].slice(flies);
+    if (fresh.length > 1) { fresh.forEach(f => f.remove()); Skarbonka.flyUp('+' + total, SKB.streak >= 3 ? 'seria ' + SKB.streak : ''); }
+  }
+
   function check() {
     const s = S();
-    if (s.gaps.some(g => !g.got)) return;
+    if (s.checked || s.gaps.some(g => !g.got)) return;
     s.checked = true;
+    score(s);
     render();
     const chars = [...s.text];
     const bad = s.gaps.filter(g => g.got !== g.want);
@@ -1267,6 +1316,9 @@ const DK = (() => {
   }
 
   function summary() {
+    if (!D || D.done) return;
+    D.done = true;
+    if (SKB) D.noBonus ? SKB.newSet() : SKB.setDone();
     const all = D.sentences.flatMap(s => s.gaps), good = all.filter(g => g.got === g.want).length;
     const grade = GRADE(Math.round(100 * good / all.length));
     const id = D.d.id;
@@ -1288,6 +1340,7 @@ const DK = (() => {
 
   function list() {
     D = null;
+    if (SKB) SKB.newSet(); // leaving a dictation half-written abandons the set
     speech.stop();
     $('dk-play').classList.add('hidden');
     $('dk-summary').classList.add('hidden');
@@ -1308,8 +1361,11 @@ const DK = (() => {
     else if (k === 'enter' && !$('dk-check').disabled) { e.preventDefault(); $('dk-check').click(); }
   }
 
+  // switching to another module mid-dictation: finishing it later gives no set bonus
+  const leave = () => { if (D && !D.done && D.sentences.some(s => s.checked)) D.noBonus = true; };
+
   renderList();
-  return { key };
+  return { key, leave };
 })();
 
 // =====================================================================
@@ -1381,14 +1437,19 @@ document.addEventListener('click', e => {
 
 // ---------- menu (burger) + keyboard ----------
 let tab = 'ou';
+let playTab = null; // last module that gives stars (Ściąga does not)
 (() => {
   const mb = $('menu-btn'), menu = $('menu');
-  const items = [...menu.querySelectorAll('.menu-item')];
+  const items = [...menu.querySelectorAll('.menu-item[data-tab]')];
   const open = show => { menu.hidden = !show; mb.setAttribute('aria-expanded', String(show)); };
   function showTab(name) {
     if (!$('tab-' + name)) name = 'ou';
     tab = name;
     speech.stop();
+    if (name !== 'sciaga') {
+      if (playTab && playTab !== name) { const m = QUIZ[playTab] || (playTab === 'dyktando' ? DK : null); if (m) m.leave(); if (SKB) SKB.newSet(); }
+      playTab = name;
+    }
     document.querySelectorAll('.tabpanel').forEach(p => p.hidden = p.id !== 'tab-' + name);
     items.forEach(i => i.setAttribute('aria-current', String(i.dataset.tab === name)));
     $('menu-title').textContent = items.find(i => i.dataset.tab === name).querySelector('b').textContent;
