@@ -6,22 +6,16 @@
  */
 (function () {
   'use strict';
-  var SKARBONKA_VERSION = '1.1';
+  var SKARBONKA_VERSION = '1.2';
   var KEY = 'skarbonka.v1';
   var BASE = 300, GROW = 1.1;
   var GIFT_EVERY = 5, GIFT = 100;
   var LOG_MAX = 60;
   var GAMES_URL = '/naukagry/';
 
-  // games unlocked by level (shown in the level-up overlay and used by the hub)
-  var UNLOCKS = {
-    1: ['Klockownia', 'Ogródek'],
-    2: ['Jeżyk w biegu'],
-    3: ['Akwarium'],
-    4: ['Grządkowe trójki'],
-    5: ['Latawiec'],
-    6: ['Rury do ogródka']
-  };
+  // games unlocked by level (shown in the level-up overlay)
+  // all games are open from level 1 (Pawel, 2026-11-15); add { level: [names] } here to gate a new one
+  var UNLOCKS = {};
 
   function today() {
     var d = new Date();
