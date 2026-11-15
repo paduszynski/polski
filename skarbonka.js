@@ -6,7 +6,7 @@
  */
 (function () {
   'use strict';
-  var SKARBONKA_VERSION = '2.1';
+  var SKARBONKA_VERSION = '2.2';
   var KEY = 'skarbonka.v1';
   // economy v2 (2026-11-16): max +5 per answer, set bonus scales with set length, prices about half of v1
   var RATE = 2;           // stored state is migrated once from v1 numbers (divided by 5)
@@ -137,14 +137,17 @@
   // S.retry()       correct answer to an item that was wrong before -> 1
   // S.setDone()     finished set -> +1 per 2 answers, doubled if clean, + daily bonus; resets set state
   // S.newSet()      start a set over without the bonus (e.g. settings changed)
-  function session(app) {
+  // opts.mult: multiplier for this app's answers and set bonus (not the daily bonus); Matma uses 2
+  // because its answers take longer (multi-step problems, wait after a mistake)
+  function session(app, opts) {
+    var mult = (opts && opts.mult) || 1;
     var st = { streak: 0, clean: true, answered: 0 };
     function fire(n, label) { if (n > 0) flyUp('+' + n, label); }
     return {
       get streak() { return st.streak; },
       correct: function () {
         st.streak++; st.answered++;
-        var p = pointsForStreak(st.streak);
+        var p = pointsForStreak(st.streak) * mult;
         earn(p, app, 'dobra odpowiedź, seria ' + st.streak);
         fire(p, st.streak >= 3 ? 'seria ' + st.streak : '');
         if (st.streak === 5 || st.streak === 10 || (st.streak > 10 && st.streak % 10 === 0)) streakBurst(st.streak);
@@ -152,10 +155,10 @@
         return p;
       },
       wrong: function () { st.streak = 0; st.clean = false; st.answered++; render(); return 0; },
-      retry: function () { earn(1, app, 'poprawka'); fire(1, 'poprawka'); render(); return 1; },
+      retry: function () { earn(mult, app, 'poprawka'); fire(mult, 'poprawka'); render(); return mult; },
       setDone: function () {
         if (st.answered === 0) return 0;
-        var half = Math.ceil(st.answered / 2), b = half + (st.clean ? half : 0);
+        var half = Math.ceil(st.answered / 2), b = (half + (st.clean ? half : 0)) * mult;
         earn(b, app, st.clean ? 'zestaw bez błędu' : 'zestaw ukończony');
         var d = dailyBonus(app);
         fire(b + d, st.clean ? 'zestaw bez błędu!' : 'zestaw ukończony');

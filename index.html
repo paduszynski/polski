@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Polski – ćwiczenia dla dzieci</title>
-<meta name="version" content="1.6">
+<meta name="version" content="1.7">
 <meta name="description" content="Polski – ćwiczenia dla dzieci: ó czy u, rz czy ż, ch czy h, dyktanda z lektorem, alfabet, litery i głoski, sylaby.">
 <meta name="theme-color" content="#1f3d99">
 <link rel="manifest" href="manifest.webmanifest">
@@ -289,7 +289,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.6">1.6</span></div>
+    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.7">1.7</span></div>
     <div class="wallet" id="wallet"></div>
     <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
       <span class="menu-title" id="menu-title"></span>
@@ -363,7 +363,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
   </section>
 </main>
 
-<footer>Polski 1.6 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
+<footer>Polski 1.7 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
 <canvas id="confetti"></canvas>
 
 <script src="skarbonka.js"></script>
@@ -803,10 +803,25 @@ function Quiz(cfg) {
     return out;
   }
 
+  // words missed in the previous round always come back in the next "Nowa runda" (Daria's idea, for practice)
+  let carry = [];
+  const idOf = it => cfg.keyOf(it) || JSON.stringify(it);
+  function freshList() {
+    const n = +S.size, pool = cfg.pool(S);
+    const left = R && phase !== 'summary' ? R.miss : []; // a round left unfinished still passes its misses on
+    const want = new Set([...carry, ...left].map(idOf));
+    carry = [];
+    const back = pool.filter(it => want.has(idOf(it))).slice(0, n);
+    const backIds = new Set(back.map(idOf));
+    const rest = sample(pool.filter(it => !backIds.has(idOf(it))), n - back.length);
+    const list = back.map(it => ({ it, back: true })).concat(rest.map(it => ({ it, back: false })));
+    for (let i = list.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [list[i], list[j]] = [list[j], list[i]]; }
+    return list;
+  }
   function newRound(items) {
-    const list = items || sample(cfg.pool(S), +S.size);
+    const list = items ? items.map(it => ({ it, back: false })) : freshList();
     // review = "Powtórz trudne" (every item was wrong before); noBonus = left for another module mid-round
-    R = { queue: list.map(it => ({ it, retry: false })), ok: 0, bad: 0, streak: 0, best: 0, miss: [], review: !!items, answered: 0, noBonus: false };
+    R = { queue: list.map(x => ({ it: x.it, retry: false, back: x.back })), ok: 0, bad: 0, streak: 0, best: 0, miss: [], review: !!items, answered: 0, noBonus: false };
     if (SKB) SKB.newSet(); // an unfinished round is abandoned without the set bonus
     el.sum.classList.add('hidden');
     el.play.classList.remove('hidden');
@@ -818,7 +833,7 @@ function Quiz(cfg) {
     const c = cur(); if (!c) return;
     phase = 'question';
     el.card.classList.remove('ok', 'bad');
-    el.badge.textContent = c.retry ? 'Jeszcze raz' : '';
+    el.badge.textContent = c.retry ? 'Jeszcze raz' : c.back ? 'Z poprzedniej rundy' : '';
     el.fb.textContent = ''; el.why.textContent = '';
     el.next.classList.add('hidden');
     el.a.classList.remove('locked');
@@ -865,6 +880,7 @@ function Quiz(cfg) {
   }
 
   function summary() {
+    carry = R.miss.slice();
     phase = 'summary'; stats();
     // "Powtórz trudne" continues a set that already got its bonus; a round left for another module gets none
     if (SKB) R.review || R.noBonus ? SKB.newSet() : SKB.setDone();
