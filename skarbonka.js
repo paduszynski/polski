@@ -6,9 +6,18 @@
  */
 (function () {
   'use strict';
-  var SKARBONKA_VERSION = '2.2';
+  var SKARBONKA_VERSION = '2.3';
   var KEY = 'skarbonka.v1';
-  // economy v2 (2026-11-16): max +5 per answer, set bonus scales with set length, prices about half of v1
+  // economy v2 (2026-11-16): set bonus scales with set length, prices about half of v1
+  // v2.3: per-app answer points; a clean 10-question set from a cold streak pays
+  // Angielski/Polski 75 (5,5,6,6,7,7,7,7,7,8 + 10), Matma 100 (6,6,8,8,10,10,10,10,10,12 + 10)
+  var RATES = {
+    matma: { base: 6, step: 2, retry: 3 },
+    angielski: { base: 5, step: 1, retry: 2 },
+    polski: { base: 5, step: 1, retry: 2 },
+    _: { base: 5, step: 1, retry: 2 }
+  };
+  var TIER_AT = [1, 3, 5, 10]; // streak length where streak tier 0/1/2/3 starts
   var RATE = 2;           // stored state is migrated once from v1 numbers (divided by 5)
   var BASE = 60, GROW = 1.1;
   var GIFT_EVERY = 5, GIFT = 20;
@@ -60,7 +69,11 @@
     while (earned >= acc + need(lvl)) { acc += need(lvl); lvl++; }
     return { level: lvl, into: earned - acc, need: need(lvl), start: acc };
   }
-  function pointsForStreak(streak) { return streak >= 10 ? 5 : streak >= 5 ? 4 : streak >= 3 ? 3 : 2; }
+  function tierOf(streak) { return streak >= 10 ? 3 : streak >= 5 ? 2 : streak >= 3 ? 1 : 0; }
+  function rateOf(app) { return RATES[app] || RATES._; }
+  function pointsForStreak(streak, app) { var r = rateOf(app); return r.base + r.step * tierOf(streak); }
+  // a wrong answer drops the streak one tier down instead of to zero
+  function streakAfterWrong(streak) { var k = tierOf(streak); return k <= 1 ? 0 : TIER_AT[k - 1] - 1; }
 
   // ---------- events ----------
   var subs = [];
@@ -132,33 +145,31 @@
 
   // ---------- session helper for learning apps ----------
   // var S = Skarbonka.session('matma');
-  // S.correct()     first-try correct answer -> 2/3/4/5 by streak
-  // S.wrong()       wrong first try -> streak 0, set is no longer clean
-  // S.retry()       correct answer to an item that was wrong before -> 1
+  // S.correct()     first-try correct answer -> base + step x streak tier (RATES[app])
+  // S.wrong()       wrong first try -> streak one tier down, set is no longer clean
+  // S.retry()       correct answer to an item that was wrong before -> RATES[app].retry
   // S.setDone()     finished set -> +1 per 2 answers, doubled if clean, + daily bonus; resets set state
   // S.newSet()      start a set over without the bonus (e.g. settings changed)
-  // opts.mult: multiplier for this app's answers and set bonus (not the daily bonus); Matma uses 2
-  // because its answers take longer (multi-step problems, wait after a mistake)
-  function session(app, opts) {
-    var mult = (opts && opts.mult) || 1;
+  function session(app) {
+    var rate = rateOf(app);
     var st = { streak: 0, clean: true, answered: 0 };
     function fire(n, label) { if (n > 0) flyUp('+' + n, label); }
     return {
       get streak() { return st.streak; },
       correct: function () {
         st.streak++; st.answered++;
-        var p = pointsForStreak(st.streak) * mult;
+        var p = pointsForStreak(st.streak, app);
         earn(p, app, 'dobra odpowiedź, seria ' + st.streak);
         fire(p, st.streak >= 3 ? 'seria ' + st.streak : '');
         if (st.streak === 5 || st.streak === 10 || (st.streak > 10 && st.streak % 10 === 0)) streakBurst(st.streak);
         render();
         return p;
       },
-      wrong: function () { st.streak = 0; st.clean = false; st.answered++; render(); return 0; },
-      retry: function () { earn(mult, app, 'poprawka'); fire(mult, 'poprawka'); render(); return mult; },
+      wrong: function () { st.streak = streakAfterWrong(st.streak); st.clean = false; st.answered++; render(); return 0; },
+      retry: function () { var p = rate.retry; earn(p, app, 'poprawka'); fire(p, 'poprawka'); render(); return p; },
       setDone: function () {
         if (st.answered === 0) return 0;
-        var half = Math.ceil(st.answered / 2), b = (half + (st.clean ? half : 0)) * mult;
+        var half = Math.ceil(st.answered / 2), b = half + (st.clean ? half : 0);
         earn(b, app, st.clean ? 'zestaw bez błędu' : 'zestaw ukończony');
         var d = dailyBonus(app);
         fire(b + d, st.clean ? 'zestaw bez błędu!' : 'zestaw ukończony');
@@ -305,6 +316,8 @@
     levelOf: levelOf,
     level: function () { return levelOf(read().earned); },
     pointsForStreak: pointsForStreak,
+    streakAfterWrong: streakAfterWrong,
+    RATES: RATES,
     session: session,
     useSession: useSession,
     mountBadge: mountBadge,
