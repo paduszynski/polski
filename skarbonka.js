@@ -6,7 +6,7 @@
  */
 (function () {
   'use strict';
-  var SKARBONKA_VERSION = '2.3';
+  var SKARBONKA_VERSION = '2.4';
   var KEY = 'skarbonka.v1';
   // economy v2 (2026-11-16): set bonus scales with set length, prices about half of v1
   // v2.3: per-app answer points; a clean 10-question set from a cold streak pays
@@ -86,12 +86,23 @@
     s.log.unshift({ t: Date.now(), app: app, kind: kind, amount: amount, note: note || '' });
     if (s.log.length > LOG_MAX) s.log.length = LOG_MAX;
   }
+  // today's learning: stars earned in the learning apps and finished sets (Ogródek's can, daily quests)
+  function bumpToday(s, k, n) {
+    var t = today();
+    if (!s.today || s.today.d !== t) s.today = { d: t, sets: 0, earned: 0 };
+    s.today[k] = (s.today[k] || 0) + n;
+  }
+  function todayStats() {
+    var s = read(), t = today();
+    return s.today && s.today.d === t ? { sets: s.today.sets || 0, earned: s.today.earned || 0 } : { sets: 0, earned: 0 };
+  }
   // earn: counts toward balance and level. Returns { gained, level, levelUp, levels, gift, unlocked }
   function earn(amount, app, note) {
     amount = Math.max(0, Math.round(amount || 0));
     var s = read();
     var before = levelOf(s.earned).level;
     s.balance += amount; s.earned += amount;
+    if (app && app !== 'naukagry') bumpToday(s, 'earned', amount);
     log(s, app, 'earn', amount, note);
     var after = levelOf(s.earned).level, gift = 0, unlocked = [], levels = [];
     for (var l = before + 1; l <= after; l++) {
@@ -169,6 +180,7 @@
       retry: function () { var p = rate.retry; earn(p, app, 'poprawka'); fire(p, 'poprawka'); render(); return p; },
       setDone: function () {
         if (st.answered === 0) return 0;
+        var ts = read(); bumpToday(ts, 'sets', 1); write(ts);
         var half = Math.ceil(st.answered / 2), b = half + (st.clean ? half : 0);
         earn(b, app, st.clean ? 'zestaw bez błędu' : 'zestaw ukończony');
         var d = dailyBonus(app);
@@ -312,6 +324,7 @@
     refund: refund,
     gift: gift,
     dailyBonus: dailyBonus,
+    todayStats: todayStats,
     need: need,
     levelOf: levelOf,
     level: function () { return levelOf(read().earned); },

@@ -1,5 +1,5 @@
 // Polski service worker: works offline, always tries the network first for the app itself.
-const CACHE = 'polski-1.8';
+const CACHE = 'polski-1.9';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './skarbonka.js', './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './icons/apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
