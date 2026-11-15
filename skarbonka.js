@@ -6,7 +6,7 @@
  */
 (function () {
   'use strict';
-  var SKARBONKA_VERSION = '2.4';
+  var SKARBONKA_VERSION = '2.5';
   var KEY = 'skarbonka.v1';
   // economy v2 (2026-11-16): set bonus scales with set length, prices about half of v1
   // v2.3: per-app answer points; a clean 10-question set from a cold streak pays
@@ -41,12 +41,25 @@
   function fresh() {
     return { v: 1, rate: RATE, balance: 0, earned: 0, spent: 0, gifts: 0, days: { last: null, streak: 0 }, log: [] };
   }
-  var memory = null; // fallback when localStorage is blocked
+  var memory = null;       // last written state: fallback when localStorage is blocked
+  var memoryNewer = false; // the last write failed (storage full), so memory beats what is stored
+  function num(v, d) { return typeof v === 'number' && isFinite(v) ? v : d; }
+  // a hand-edited or half-written wallet must never block learning: fix wrong types field by field
+  function repair(s) {
+    ['balance', 'earned', 'spent', 'gifts'].forEach(function (k) { s[k] = Math.max(0, num(s[k], 0)); });
+    if (!Array.isArray(s.log)) s.log = [];
+    if (!s.days || typeof s.days !== 'object') s.days = { last: null, streak: 0 };
+    if (typeof s.days.last !== 'string') s.days.last = null;
+    s.days.streak = Math.max(0, num(s.days.streak, 0));
+    if (s.today != null && (typeof s.today !== 'object' || typeof s.today.d !== 'string')) delete s.today;
+    return s;
+  }
   function read() {
     var s = null;
-    try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) { s = null; }
+    if (memoryNewer && memory) s = JSON.parse(JSON.stringify(memory));
+    else { try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) { s = null; } }
     if (!s && memory) s = JSON.parse(JSON.stringify(memory));
-    if (!s || typeof s !== 'object') s = fresh();
+    if (!s || typeof s !== 'object' || Array.isArray(s)) s = fresh();
     if (!s.rate) { // v1 -> v2: earnings were about 5x bigger; keep the level, shrink the numbers
       ['balance', 'earned', 'spent', 'gifts'].forEach(function (k) { s[k] = Math.round((s[k] || 0) / 5); });
       s.rate = RATE;
@@ -54,11 +67,11 @@
     }
     var f = fresh();
     for (var k in f) if (!(k in s)) s[k] = f[k];
-    return s;
+    return repair(s);
   }
   function write(s) {
     memory = s;
-    try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify(s)); memoryNewer = false; } catch (e) { memoryNewer = true; }
     emit(s);
   }
 

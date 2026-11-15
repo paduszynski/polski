@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Polski – ćwiczenia dla dzieci</title>
-<meta name="version" content="1.9">
+<meta name="version" content="1.10">
 <meta name="description" content="Polski – ćwiczenia dla dzieci: ó czy u, rz czy ż, ch czy h, dyktanda z lektorem, alfabet, litery i głoski, sylaby.">
 <meta name="theme-color" content="#1f3d99">
 <link rel="manifest" href="manifest.webmanifest">
@@ -232,6 +232,10 @@ kbd{font-family:inherit;border:1.5px solid var(--muted);border-bottom-width:3px;
 .no-voice{color:var(--muted);font-size:1rem;text-align:center;margin:0}
 .sentence{max-width:760px;margin:0 auto;width:100%;font-size:clamp(1.9rem,8vw,2.6rem);line-height:2.15;color:var(--pencil);padding:10px 6px;text-align:left}
 .sentence .gap{cursor:pointer;border-radius:4px 4px 0 0}
+/* a gap is only a letter wide: a transparent ~44 px hit area around it, without moving the text */
+.sentence:not(.checked) .gap::after{content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+#dk-keys{gap:12px;align-items:center}
+.key.del{width:min(16vw,72px);height:min(16vw,72px);font-size:clamp(1.6rem,7vw,2.2rem);color:var(--muted);border-width:2px;box-shadow:0 4px 0 currentColor;flex:none}
 .sentence .gap.active{background:var(--hi);border-bottom-style:solid;border-bottom-color:var(--ink)}
 .sentence.checked .gap{cursor:default}
 .sentence .wd{white-space:nowrap}
@@ -289,7 +293,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
 
 <header class="top">
   <div class="wrap">
-    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.9">1.9</span></div>
+    <div class="brand"><span class="logo">Ąę</span>Polski<span class="ver" title="Wersja 1.10">1.10</span></div>
     <div class="wallet" id="wallet"></div>
     <button class="menu-btn" id="menu-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="menu">
       <span class="menu-title" id="menu-title"></span>
@@ -363,7 +367,7 @@ footer{color:var(--muted);text-align:center;font-size:1rem;padding-block:8px 28p
   </section>
 </main>
 
-<footer>Polski 1.9 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
+<footer>Polski 1.10 · stuknij słowo w ściądze, żeby je usłyszeć · postęp zapisuje się w tej przeglądarce</footer>
 <canvas id="confetti"></canvas>
 
 <script src="skarbonka.js"></script>
@@ -1209,7 +1213,8 @@ const DK = (() => {
     D = { d, set, n: 0, sentences: d.s.map(t => parse(t, set)), active: 0, done: false, noBonus: false };
     if (!MISSED[d.id]) MISSED[d.id] = new Set();
     if (SKB) SKB.newSet(); // the whole dictation is one set
-    $('dk-keys').innerHTML = cfg.pair.map((l, i) => `<button class="key k${i}" type="button" data-l="${l}" aria-label="${l}">${l}</button>`).join('');
+    $('dk-keys').innerHTML = cfg.pair.map((l, i) => `<button class="key k${i}" type="button" data-l="${l}" aria-label="${l}">${l}</button>`).join('') +
+      '<button class="key del" type="button" data-del aria-label="Wyczyść lukę">⌫</button>';
     $('dk-kbd').innerHTML = cfg.kbd;
     $('dk-cheat').innerHTML = cheatBox(set);
     $('dk-choose').classList.add('hidden');
@@ -1291,7 +1296,10 @@ const DK = (() => {
     else if (D.active > 0) { D.active--; s.gaps[D.active].got = null; }
     render();
   }
-  $('dk-keys').addEventListener('click', e => { const b = e.target.closest('[data-l]'); if (b) put(b.dataset.l); });
+  $('dk-keys').addEventListener('click', e => {
+    const b = e.target.closest('[data-l],[data-del]');
+    if (b) b.dataset.del !== undefined ? back() : put(b.dataset.l);
+  });
 
   // stars: every gap is one item, scored once when its sentence is checked
   function score(s) {
