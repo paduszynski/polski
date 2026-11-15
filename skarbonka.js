@@ -6,10 +6,12 @@
  */
 (function () {
   'use strict';
-  var SKARBONKA_VERSION = '1.2';
+  var SKARBONKA_VERSION = '2.1';
   var KEY = 'skarbonka.v1';
-  var BASE = 300, GROW = 1.1;
-  var GIFT_EVERY = 5, GIFT = 100;
+  // economy v2 (2026-11-16): max +5 per answer, set bonus scales with set length, prices about half of v1
+  var RATE = 2;           // stored state is migrated once from v1 numbers (divided by 5)
+  var BASE = 60, GROW = 1.1;
+  var GIFT_EVERY = 5, GIFT = 20;
   var LOG_MAX = 60;
   var GAMES_URL = '/naukagry/';
 
@@ -28,7 +30,7 @@
   }
 
   function fresh() {
-    return { v: 1, balance: 0, earned: 0, spent: 0, gifts: 0, days: { last: null, streak: 0 }, log: [] };
+    return { v: 1, rate: RATE, balance: 0, earned: 0, spent: 0, gifts: 0, days: { last: null, streak: 0 }, log: [] };
   }
   var memory = null; // fallback when localStorage is blocked
   function read() {
@@ -36,6 +38,11 @@
     try { s = JSON.parse(localStorage.getItem(KEY)); } catch (e) { s = null; }
     if (!s && memory) s = JSON.parse(JSON.stringify(memory));
     if (!s || typeof s !== 'object') s = fresh();
+    if (!s.rate) { // v1 -> v2: earnings were about 5x bigger; keep the level, shrink the numbers
+      ['balance', 'earned', 'spent', 'gifts'].forEach(function (k) { s[k] = Math.round((s[k] || 0) / 5); });
+      s.rate = RATE;
+      try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {}
+    }
     var f = fresh();
     for (var k in f) if (!(k in s)) s[k] = f[k];
     return s;
@@ -47,13 +54,13 @@
   }
 
   // ---------- levels ----------
-  function need(n) { return Math.round(BASE * Math.pow(GROW, n - 1) / 10) * 10; }
+  function need(n) { return Math.round(BASE * Math.pow(GROW, n - 1) / 5) * 5; }
   function levelOf(earned) {
     var lvl = 1, acc = 0;
     while (earned >= acc + need(lvl)) { acc += need(lvl); lvl++; }
     return { level: lvl, into: earned - acc, need: need(lvl), start: acc };
   }
-  function pointsForStreak(streak) { return streak >= 10 ? 30 : streak >= 5 ? 20 : streak >= 3 ? 15 : 10; }
+  function pointsForStreak(streak) { return streak >= 10 ? 5 : streak >= 5 ? 4 : streak >= 3 ? 3 : 2; }
 
   // ---------- events ----------
   var subs = [];
@@ -102,7 +109,15 @@
     log(s, app, 'refund', amount, note);
     write(s);
   }
-  // first finished set of the day: +20, each following day in a row +10 more, max +50
+  // adds to the balance only (not the level): level gifts, parent's bonus
+  function gift(amount, app, note) {
+    amount = Math.max(0, Math.round(amount || 0));
+    var s = read();
+    s.balance += amount; s.gifts += amount;
+    log(s, app, 'gift', amount, note);
+    write(s);
+  }
+  // first finished set of the day: +5, each following day in a row +1 more, max +10
   function dailyBonus(app) {
     var s = read(), t = today();
     if (s.days.last === t) return 0;
@@ -110,17 +125,17 @@
     s.days.streak = gap === 1 ? s.days.streak + 1 : 1;
     s.days.last = t;
     write(s);
-    var bonus = Math.min(20 + 10 * (s.days.streak - 1), 50);
+    var bonus = Math.min(5 + (s.days.streak - 1), 10);
     earn(bonus, app, 'pierwszy zestaw dnia (' + s.days.streak + ' dz. z rzędu)');
     return bonus;
   }
 
   // ---------- session helper for learning apps ----------
   // var S = Skarbonka.session('matma');
-  // S.correct()     first-try correct answer -> 10/15/20/30 by streak
+  // S.correct()     first-try correct answer -> 2/3/4/5 by streak
   // S.wrong()       wrong first try -> streak 0, set is no longer clean
-  // S.retry()       correct answer to an item that was wrong before -> 3
-  // S.setDone()     finished set -> +20, +50 if clean, + daily bonus; resets set state
+  // S.retry()       correct answer to an item that was wrong before -> 1
+  // S.setDone()     finished set -> +1 per 2 answers, doubled if clean, + daily bonus; resets set state
   // S.newSet()      start a set over without the bonus (e.g. settings changed)
   function session(app) {
     var st = { streak: 0, clean: true, answered: 0 };
@@ -137,10 +152,10 @@
         return p;
       },
       wrong: function () { st.streak = 0; st.clean = false; st.answered++; render(); return 0; },
-      retry: function () { earn(3, app, 'poprawka'); fire(3, 'poprawka'); render(); return 3; },
+      retry: function () { earn(1, app, 'poprawka'); fire(1, 'poprawka'); render(); return 1; },
       setDone: function () {
         if (st.answered === 0) return 0;
-        var b = 20 + (st.clean ? 50 : 0);
+        var half = Math.ceil(st.answered / 2), b = half + (st.clean ? half : 0);
         earn(b, app, st.clean ? 'zestaw bez błędu' : 'zestaw ukończony');
         var d = dailyBonus(app);
         fire(b + d, st.clean ? 'zestaw bez błędu!' : 'zestaw ukończony');
@@ -281,6 +296,7 @@
     earn: earn,
     spend: spend,
     refund: refund,
+    gift: gift,
     dailyBonus: dailyBonus,
     need: need,
     levelOf: levelOf,
